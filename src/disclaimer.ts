@@ -1,5 +1,6 @@
 import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
+import { getUrl } from './utils/url';
 import disclaimerData from './data/disclaimer.json';
 
 const app = document.getElementById('app');
@@ -65,7 +66,7 @@ if (app) {
           </div>
 
           <div style="margin-top: 2.5rem; text-align: center;">
-            <a href="/contact/" class="btn btn-primary" style="font-size: 1.15rem; padding: 0.85rem 2rem;">
+            <a href="${getUrl('/contact/')}" class="btn btn-primary" style="font-size: 1.15rem; padding: 0.85rem 2rem;">
               <span>Proceed to Submission Form &rarr;</span>
             </a>
           </div>

@@ -1,5 +1,6 @@
 import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
+import { getUrl } from './utils/url';
 import faqData from './data/faq.json';
 
 const app = document.getElementById('app');
@@ -67,7 +68,7 @@ if (app) {
           <p style="font-size: 0.95rem; color: var(--c-ink-muted); margin-bottom: 1.25rem;">
             Reach out directly to the editorial board or contact us through our official society channels.
           </p>
-          <a href="/contact/" class="btn btn-primary" style="font-size: 1.05rem;">
+          <a href="${getUrl('/contact/')}" class="btn btn-primary" style="font-size: 1.05rem;">
             <span>Contact The Editorial Team &rarr;</span>
           </a>
         </div>

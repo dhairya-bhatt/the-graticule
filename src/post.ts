@@ -1,6 +1,7 @@
 import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
 import { getPosts, getPostBySlug, Post } from './data/store';
+import { getUrl } from './utils/url';
 
 const postsList: Post[] = getPosts();
 
@@ -384,11 +385,11 @@ async function render() {
       <article class="container">
         <!-- Breadcrumbs -->
         <nav style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--c-ink-muted); margin-bottom: 2rem;" aria-label="Breadcrumb">
-          <a href="/" style="color: var(--c-ink-muted);">Home</a>
+          <a href="${getUrl('/')}" style="color: var(--c-ink-muted);">Home</a>
           <span>/</span>
-          <a href="/journal/" style="color: var(--c-ink-muted);">Journal</a>
+          <a href="${getUrl('/journal/')}" style="color: var(--c-ink-muted);">Journal</a>
           <span>/</span>
-          <a href="/journal/?category=${encodeURIComponent(postMeta.categories[0] || 'Geography')}" style="color: var(--c-emerald); font-weight: 600;">
+          <a href="${getUrl('/journal/?category=' + encodeURIComponent(postMeta.categories[0] || 'Geography'))}" style="color: var(--c-emerald); font-weight: 600;">
             ${postMeta.categories[0] || 'Geography'}
           </a>
         </nav>
@@ -397,7 +398,7 @@ async function render() {
         <header style="max-width: 900px; margin: 0 auto 2.5rem; text-align: center;">
           <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 1.25rem;">
             ${postMeta.categories.map((cat: string) => `
-              <a href="/journal/?category=${encodeURIComponent(cat)}" class="stamp-chip" style="font-size: 0.88rem;">
+              <a href="${getUrl('/journal/?category=' + encodeURIComponent(cat))}" class="stamp-chip" style="font-size: 0.88rem;">
                 <span>${cat}</span>
               </a>
             `).join('')}
@@ -467,7 +468,7 @@ async function render() {
             ${postMeta.authorBio || `${postMeta.author} is a researcher and contributor to The Graticule, the student-led geography journal at Queen's University Belfast.`}
           </p>
           <div class="author-bio-footer">
-            <a href="/journal/?author=${encodeURIComponent(postMeta.author)}" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.5rem 1rem;">
+            <a href="${getUrl('/journal/?author=' + encodeURIComponent(postMeta.author))}" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.5rem 1rem;">
               VIEW ALL ARTICLES BY ${postMeta.author.toUpperCase()} &rarr;
             </a>
           </div>
@@ -481,7 +482,7 @@ async function render() {
         <!-- Editorial Footnote -->
         <div style="max-width: 800px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1.5px solid var(--c-border);">
           <div style="display: flex; align-items: center; gap: 0.85rem; background: var(--c-paper-warm); padding: 1.25rem 1.5rem; border-radius: var(--radius-sm); border: 1px dashed var(--c-border);">
-            <div class="brand-monogram" style="width: 36px; height: 36px; font-size: 1.7rem; flex-shrink: 0;">𝔊</div>
+            <div class="brand-monogram" style="width: 36px; height: 36px; font-size: 1.7rem; flex-shrink: 0;">G</div>
             <p style="font-size: 0.88rem; color: var(--c-ink-muted); margin: 0; line-height: 1.55;">
               <strong>The Graticule Editorial Board:</strong> Articles published in The Graticule represent the scholarly views and analysis of the contributing author and do not necessarily reflect the official positions of the Queen's University Belfast Geography Society or the School of Natural and Built Environment.
             </p>
@@ -491,14 +492,14 @@ async function render() {
         <!-- Next / Previous Article Navigation -->
         <div style="max-width: 800px; margin: 3.5rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; padding-top: 2rem; border-top: 2px solid var(--c-ink);">
           ${prevPost ? `
-            <a href="/post/?slug=${encodeURIComponent(prevPost.slug)}" class="btn btn-outline" style="text-align: left; display: flex; flex-direction: column; align-items: flex-start; padding: 1.25rem; height: auto;">
+            <a href="${getUrl('/post/?slug=' + encodeURIComponent(prevPost.slug))}" class="btn btn-outline" style="text-align: left; display: flex; flex-direction: column; align-items: flex-start; padding: 1.25rem; height: auto;">
               <span style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--c-emerald-hover); font-weight: 700;">&larr; PREVIOUS DISPATCH</span>
               <span class="font-serif" style="font-size: 1.05rem; font-weight: 700; color: var(--c-ink); margin-top: 0.25rem;">${prevPost.title}</span>
             </a>
           ` : '<div></div>'}
 
           ${nextPost ? `
-            <a href="/post/?slug=${encodeURIComponent(nextPost.slug)}" class="btn btn-outline" style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; padding: 1.25rem; height: auto;">
+            <a href="${getUrl('/post/?slug=' + encodeURIComponent(nextPost.slug))}" class="btn btn-outline" style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; padding: 1.25rem; height: auto;">
               <span style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--c-emerald-hover); font-weight: 700;">NEXT DISPATCH &rarr;</span>
               <span class="font-serif" style="font-size: 1.05rem; font-weight: 700; color: var(--c-ink); margin-top: 0.25rem;">${nextPost.title}</span>
             </a>

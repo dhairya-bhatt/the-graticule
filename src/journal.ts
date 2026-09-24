@@ -1,6 +1,7 @@
 import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
 import { getPosts, Post } from './data/store';
+import { getUrl } from './utils/url';
 import categoriesData from './data/categories.json';
 
 const posts: Post[] = getPosts();
@@ -118,14 +119,14 @@ function render() {
           <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2.25rem;">
             ${pagePosts.map(post => `
               <article class="article-card">
-                <a href="/post/?slug=${encodeURIComponent(post.slug)}" style="display: flex; flex-direction: column; height: 100%;">
+                <a href="${getUrl('/post/?slug=' + encodeURIComponent(post.slug))}" style="display: flex; flex-direction: column; height: 100%;">
                   <div class="article-card-media">
                     <img 
-                      src="${post.coverImage || '/images/logo-g.svg'}" 
+                      src="${post.coverImage || getUrl('/images/logo-g.svg')}" 
                       alt="${post.title}" 
                       class="article-card-img" 
                       loading="lazy"
-                      onerror="this.src='/images/logo-g.svg'"
+                      onerror="this.src='${getUrl('/images/logo-g.svg')}'"
                     />
                     <div class="article-card-stamp">${post.categories[0] || 'Geography'}</div>
                   </div>

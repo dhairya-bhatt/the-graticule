@@ -1,5 +1,6 @@
 import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
+import { getUrl } from './utils/url';
 import resourcesData from './data/resources.json';
 
 const app = document.getElementById('app');
@@ -102,7 +103,7 @@ if (app) {
           <p style="font-family: var(--font-collegiate); font-size: 1.15rem; letter-spacing: 0.05em; color: var(--c-ink); margin-bottom: 0.5rem;">
             ${resourcesData.footerNotice}
           </p>
-          <a href="/contact/" style="color: var(--c-emerald-hover); font-weight: 700; font-size: 0.95rem; text-decoration: underline;">
+          <a href="${getUrl('/contact/')}" style="color: var(--c-emerald-hover); font-weight: 700; font-size: 0.95rem; text-decoration: underline;">
             Contact The Graticule Editorial Board &rarr;
           </a>
         </div>

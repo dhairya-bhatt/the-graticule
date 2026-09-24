@@ -1,5 +1,6 @@
 import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
+import { getUrl } from './utils/url';
 
 const app = document.getElementById('app');
 
@@ -30,10 +31,10 @@ if (app) {
         </p>
 
         <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem;">
-          <a href="/" class="btn btn-primary">
+          <a href="${getUrl('/')}" class="btn btn-primary">
             <span>&larr; Return to Base Camp (Home)</span>
           </a>
-          <a href="/journal/" class="btn btn-outline">
+          <a href="${getUrl('/journal/')}" class="btn btn-outline">
             <span>Browse The Journal Archive</span>
           </a>
         </div>

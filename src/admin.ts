@@ -15,6 +15,7 @@ import {
   Post,
   Author
 } from './data/store';
+import { getUrl } from './utils/url';
 import categoriesData from './data/categories.json';
 
 const app = document.getElementById('app');
@@ -113,7 +114,7 @@ function renderLoginGate() {
             Default credentials: admin / graticule2021
           </div>
           <div>
-            <a href="/" style="color: var(--c-emerald); text-decoration: none; font-weight: 600;">&larr; Return to The Graticule Homepage</a>
+            <a href="${getUrl('/')}" style="color: var(--c-emerald); text-decoration: none; font-weight: 600;">&larr; Return to The Graticule Homepage</a>
           </div>
         </div>
       </div>
@@ -192,7 +193,7 @@ function renderDashboard() {
       <header class="admin-header">
         <div class="admin-header-inner">
           <div style="display: flex; align-items: center; gap: 1rem;">
-            <div class="brand-monogram" style="width: 40px; height: 40px; font-size: 2rem;">𝔊</div>
+            <div class="brand-monogram" style="width: 40px; height: 40px; font-size: 2rem;">G</div>
             <div>
               <div class="font-collegiate" style="font-size: 1.4rem; letter-spacing: 0.05em; color: var(--c-ink); line-height: 1;">THE GRATICULE</div>
               <span style="font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-emerald); font-weight: 700;">EDITORIAL CONTROL CENTER</span>
@@ -200,7 +201,7 @@ function renderDashboard() {
           </div>
 
           <div style="display: flex; align-items: center; gap: 1rem;">
-            <a href="/" target="_blank" class="btn btn-outline btn-sm" style="font-size: 0.82rem; padding: 0.45rem 0.85rem;">
+            <a href="${getUrl('/')}" target="_blank" class="btn btn-outline btn-sm" style="font-size: 0.82rem; padding: 0.45rem 0.85rem;">
               <span>View Live Journal ↗</span>
             </a>
             <div class="admin-user-badge">
@@ -313,7 +314,7 @@ function renderDashboard() {
                     <tr>
                       <td>
                         <div class="admin-thumb-box">
-                          <img src="${p.coverImage || '/images/logo-g.svg'}" alt="" onerror="this.src='/images/logo-g.svg'" />
+                          <img src="${p.coverImage || getUrl('/images/logo-g.svg')}" alt="" onerror="this.src='${getUrl('/images/logo-g.svg')}'" />
                         </div>
                       </td>
                       <td>
@@ -336,7 +337,7 @@ function renderDashboard() {
                       </td>
                       <td style="text-align: right;">
                         <div style="display: inline-flex; gap: 0.4rem;">
-                          <a href="/post/?slug=${encodeURIComponent(p.slug)}" target="_blank" class="admin-btn-action" title="View Live Reader">
+                          <a href="${getUrl('/post/?slug=' + encodeURIComponent(p.slug))}" target="_blank" class="admin-btn-action" title="View Live Reader">
                             👁️
                           </a>
                           <button class="admin-btn-action edit-post-btn" data-slug="${p.slug}" title="Edit Dispatch">

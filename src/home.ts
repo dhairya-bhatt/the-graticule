@@ -2,6 +2,7 @@ import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
 import { GraticuleGlobe } from './components/globe';
 import { initLoadingScreen } from './components/loader';
+import { getUrl } from './utils/url';
 
 import { getPosts } from './data/store';
 import categoriesData from './data/categories.json';
@@ -51,14 +52,14 @@ if (app) {
 
               <!-- Front Action Links -->
               <div class="hero-actions-row" style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem;">
-                <a href="/journal/" class="btn btn-dark" style="font-size: 1.05rem; padding: 0.75rem 1.5rem;">
+                <a href="${getUrl('/journal/')}" class="btn btn-dark" style="font-size: 1.05rem; padding: 0.75rem 1.5rem;">
                   <span>Explore 47 Articles</span>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </a>
-                <a href="/first-edition/" class="btn btn-outline" style="border-color: var(--c-ink); background: rgba(251, 249, 244, 0.65); font-size: 1.05rem; padding: 0.75rem 1.4rem;">
+                <a href="${getUrl('/first-edition/')}" class="btn btn-outline" style="border-color: var(--c-ink); background: rgba(251, 249, 244, 0.65); font-size: 1.05rem; padding: 0.75rem 1.4rem;">
                   <span>First Edition PDF</span>
                 </a>
-                <a href="/contact/" class="btn btn-outline" style="border-color: var(--c-ink); background: rgba(251, 249, 244, 0.65); font-size: 1.05rem; padding: 0.75rem 1.4rem;">
+                <a href="${getUrl('/contact/')}" class="btn btn-outline" style="border-color: var(--c-ink); background: rgba(251, 249, 244, 0.65); font-size: 1.05rem; padding: 0.75rem 1.4rem;">
                   <span>Submit Work</span>
                 </a>
               </div>
@@ -112,7 +113,7 @@ if (app) {
               THE GRATICULE EDITORIAL BOARD &bull; SCHOOL OF NATURAL AND BUILT ENVIRONMENT
             </cite>
             <div>
-              <a href="/about/" class="btn btn-outline" style="border-color: var(--c-ink); font-size: 1rem;">
+              <a href="${getUrl('/about/')}" class="btn btn-outline" style="border-color: var(--c-ink); font-size: 1rem;">
                 <span>Read Full Mission Statement & Archive Scans &rarr;</span>
               </a>
             </div>
@@ -133,7 +134,7 @@ if (app) {
                 LATEST ARTICLES FROM THE ARCHIVE
               </h2>
             </div>
-            <a href="/journal/" class="btn btn-primary" style="font-size: 1.05rem;">
+            <a href="${getUrl('/journal/')}" class="btn btn-primary" style="font-size: 1.05rem;">
               <span>View All 47 Articles &rarr;</span>
             </a>
           </div>
@@ -141,14 +142,14 @@ if (app) {
           <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem;">
             ${recentPosts.map((post) => `
               <article class="article-card">
-                <a href="/post/?slug=${encodeURIComponent(post.slug)}" style="display: flex; flex-direction: column; height: 100%;">
+                <a href="${getUrl('/post/?slug=' + encodeURIComponent(post.slug))}" style="display: flex; flex-direction: column; height: 100%;">
                   <div class="article-card-media">
                     <img 
-                      src="${post.coverImage || '/images/logo-g.svg'}" 
+                      src="${post.coverImage || getUrl('/images/logo-g.svg')}" 
                       alt="${post.title}" 
                       class="article-card-img" 
                       loading="lazy"
-                      onerror="this.src='/images/logo-g.svg'"
+                      onerror="this.src='${getUrl('/images/logo-g.svg')}'"
                     />
                     <div class="article-card-stamp">${post.categories[0] || 'Geography'}</div>
                   </div>
@@ -205,10 +206,10 @@ if (app) {
               </p>
 
               <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
-                <a href="/first-edition/" class="btn btn-primary">
+                <a href="${getUrl('/first-edition/')}" class="btn btn-primary">
                   <span>View Interactive Viewer & Details</span>
                 </a>
-                <a href="/documents/first_edition.pdf" target="_blank" download class="btn btn-ocean">
+                <a href="${getUrl('/documents/first_edition.pdf')}" target="_blank" download class="btn btn-ocean">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                   <span>Download Full PDF (74.5 MB)</span>
                 </a>

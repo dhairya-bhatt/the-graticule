@@ -1,3 +1,5 @@
+import { getUrl } from '../utils/url';
+
 export function renderFooter() {
   return `
     <footer class="site-footer">
@@ -28,14 +30,14 @@ export function renderFooter() {
           <div>
             <h4 class="footer-col-title">DISPATCHES & PAGES</h4>
             <ul class="footer-links">
-              <li><a href="/" class="footer-link">Home (Frontpage)</a></li>
-              <li><a href="/journal/" class="footer-link">The Journal (All 47 Articles)</a></li>
-              <li><a href="/about/" class="footer-link">About Us & Acknowledgements</a></li>
-              <li><a href="/first-edition/" class="footer-link">First Edition (Inaugural Print PDF)</a></li>
-              <li><a href="/editorial-team/" class="footer-link">Editorial Team Directory</a></li>
-              <li><a href="/disclaimer/" class="footer-link">Submission Requirements & Disclaimers</a></li>
-              <li><a href="/faq/" class="footer-link">Frequently Asked Questions</a></li>
-              <li><a href="/contact/" class="footer-link">Submissions & Contact</a></li>
+              <li><a href="${getUrl('/')}" class="footer-link">Home (Frontpage)</a></li>
+              <li><a href="${getUrl('/journal/')}" class="footer-link">The Journal (All 47 Articles)</a></li>
+              <li><a href="${getUrl('/about/')}" class="footer-link">About Us & Acknowledgements</a></li>
+              <li><a href="${getUrl('/first-edition/')}" class="footer-link">First Edition (Inaugural Print PDF)</a></li>
+              <li><a href="${getUrl('/editorial-team/')}" class="footer-link">Editorial Team Directory</a></li>
+              <li><a href="${getUrl('/disclaimer/')}" class="footer-link">Submission Requirements & Disclaimers</a></li>
+              <li><a href="${getUrl('/faq/')}" class="footer-link">Frequently Asked Questions</a></li>
+              <li><a href="${getUrl('/contact/')}" class="footer-link">Submissions & Contact</a></li>
             </ul>
           </div>
 
@@ -43,7 +45,7 @@ export function renderFooter() {
           <div>
             <h4 class="footer-col-title">COMMUNITY & WELFARE</h4>
             <ul class="footer-links" style="margin-bottom: 1.5rem;">
-              <li><a href="/help-resources/" class="footer-link" style="color: var(--c-emerald); font-weight: 600;">Support Directory & Help Resources &rarr;</a></li>
+              <li><a href="${getUrl('/help-resources/')}" class="footer-link" style="color: var(--c-emerald); font-weight: 600;">Support Directory & Help Resources &rarr;</a></li>
               <li><a href="https://reportandsupport.qub.ac.uk" target="_blank" rel="noopener" class="footer-link">QUB Report & Support</a></li>
               <li><a href="mailto:thegraticule@outlook.com" class="footer-link">thegraticule@outlook.com</a></li>
               <li><a href="mailto:geography-society@qub.ac.uk" class="footer-link">geography-society@qub.ac.uk</a></li>

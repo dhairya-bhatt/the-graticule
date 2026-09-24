@@ -1,4 +1,5 @@
 import worldData from '../data/world-boundaries.json';
+import { getUrl } from '../utils/url';
 
 export interface GlobeMarker {
   id: string;
@@ -540,7 +541,7 @@ export class GraticuleGlobe {
         </p>
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(40,178,111,0.3); padding-top: 8px;">
           <span style="font-size: 0.75rem; color: #28B26F; font-weight: 600;">${marker.name}</span>
-          <a href="/post/?slug=${encodeURIComponent(marker.slug)}" class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+          <a href="${getUrl('/post/?slug=' + encodeURIComponent(marker.slug))}" class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
             <span>Read Dispatch</span>
             <span>&rarr;</span>
           </a>

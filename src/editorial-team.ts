@@ -1,5 +1,6 @@
 import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
+import { getUrl } from './utils/url';
 import teamData from './data/team.json';
 
 const app = document.getElementById('app');
@@ -37,7 +38,7 @@ if (app) {
                     alt="${member.name}" 
                     style="width: 100%; height: 100%; object-fit: cover;"
                     loading="lazy"
-                    onerror="this.src='/images/logo-g.svg'"
+                    onerror="this.src='${getUrl('/images/logo-g.svg')}'"
                   />
                 </div>
                 <div style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--c-emerald); border: 2px solid var(--c-ink); display: flex; align-items: center; justify-content: center; color: var(--c-ink);">

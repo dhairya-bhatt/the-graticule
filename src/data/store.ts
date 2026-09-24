@@ -1,5 +1,6 @@
 import baselinePosts from './posts.json';
 import baselineAuthors from './authors.json';
+import { getUrl } from '../utils/url';
 
 export interface Author {
   name: string;
@@ -90,7 +91,7 @@ export async function getPostBySlug(slug: string): Promise<Post> {
   } catch (e) {}
 
   try {
-    const res = await fetch('/posts/' + encodeURIComponent(slug) + '.json');
+    const res = await fetch(getUrl('/posts/' + encodeURIComponent(slug) + '.json'));
     if (res.ok) {
       const json = await res.json();
       return {

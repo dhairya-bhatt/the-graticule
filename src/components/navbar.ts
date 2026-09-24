@@ -1,13 +1,15 @@
+import { getUrl } from '../utils/url';
+
 export function renderNavbar(activePage: string = '') {
   const navItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Journal', href: '/journal/' },
-    { label: 'About', href: '/about/' },
-    { label: 'First Edition', href: '/first-edition/' },
-    { label: 'Team', href: '/editorial-team/' },
-    { label: 'FAQ', href: '/faq/' },
-    { label: 'Help Resources', href: '/help-resources/' },
-    { label: 'Contact', href: '/contact/' },
+    { label: 'Home', href: getUrl('/') },
+    { label: 'Journal', href: getUrl('/journal/') },
+    { label: 'About', href: getUrl('/about/') },
+    { label: 'First Edition', href: getUrl('/first-edition/') },
+    { label: 'Team', href: getUrl('/editorial-team/') },
+    { label: 'FAQ', href: getUrl('/faq/') },
+    { label: 'Help Resources', href: getUrl('/help-resources/') },
+    { label: 'Contact', href: getUrl('/contact/') },
   ];
 
   return `
@@ -15,7 +17,7 @@ export function renderNavbar(activePage: string = '') {
       <div class="container header-inner" style="max-width: 1400px;">
         <!-- Left: Dignified Masthead with Old English Monogram -->
         <div class="header-brand-wrap">
-          <a href="/" class="brand-link" aria-label="The Graticule Homepage">
+          <a href="${getUrl('/')}" class="brand-link" aria-label="The Graticule Homepage">
             <div class="brand-monogram">G</div>
             <div class="brand-titles">
               <span class="brand-title">THE GRATICULE</span>

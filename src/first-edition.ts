@@ -1,5 +1,6 @@
 import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
+import { getUrl } from './utils/url';
 
 const app = document.getElementById('app');
 
@@ -28,12 +29,12 @@ if (app) {
         <!-- Cover & Download Callout -->
         <div style="max-width: 880px; margin: 0 auto 4rem; background: var(--c-paper-warm); border: 2px solid var(--c-ink); border-radius: var(--radius-md); padding: clamp(2rem, 5vw, 3.5rem); box-shadow: var(--shadow-crisp); display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center;" class="first-edition-grid">
           <div style="display: flex; justify-content: center;">
-            <a href="/documents/first_edition.pdf" target="_blank" download="The_Graticule_First_Edition_2021_22.pdf" title="Click to download The Graticule First Edition PDF" style="display: block; position: relative; max-width: 320px; border-radius: var(--radius-sm); overflow: hidden; border: 2px solid var(--c-ink); box-shadow: var(--shadow-crisp); transition: transform var(--tr-base);">
+            <a href="${getUrl('/documents/first_edition.pdf')}" target="_blank" download="The_Graticule_First_Edition_2021_22.pdf" title="Click to download The Graticule First Edition PDF" style="display: block; position: relative; max-width: 320px; border-radius: var(--radius-sm); overflow: hidden; border: 2px solid var(--c-ink); box-shadow: var(--shadow-crisp); transition: transform var(--tr-base);">
               <img 
                 src="https://static.wixstatic.com/media/c7bda6_5b0794debc054281801a59ac0a843ce0~mv2.png/v1/fill/w_600,h_849,al_c,q_85,enc_avif,quality_auto/c7bda6_5b0794debc054281801a59ac0a843ce0~mv2.png" 
                 alt="The Graticule First Edition Cover"
                 style="width: 100%; height: auto;" 
-                onerror="this.src='/images/logo-g.svg'"
+                onerror="this.src='${getUrl('/images/logo-g.svg')}'"
               />
               <div style="position: absolute; inset: 0; background: rgba(13, 30, 24, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity var(--tr-fast); color: #ffffff;">
                 <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -52,7 +53,7 @@ if (app) {
             </p>
 
             <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
-              <a href="/documents/first_edition.pdf" target="_blank" download="The_Graticule_First_Edition_2021_22.pdf" class="btn btn-primary">
+              <a href="${getUrl('/documents/first_edition.pdf')}" target="_blank" download="The_Graticule_First_Edition_2021_22.pdf" class="btn btn-primary">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 <span>Download PDF (74.5 MB)</span>
               </a>
@@ -75,26 +76,26 @@ if (app) {
         <div style="max-width: 980px; margin: 3rem auto 0; border: 2px solid var(--c-ink); border-radius: var(--radius-md); overflow: hidden; background: #525659; box-shadow: var(--shadow-crisp);">
           <div style="background-color: var(--c-ink); color: var(--c-paper); padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--c-emerald);">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <div class="brand-monogram" style="width: 26px; height: 26px; font-size: 1.3rem;">𝔊</div>
+              <div class="brand-monogram" style="width: 26px; height: 26px; font-size: 1.3rem;">G</div>
               <span class="font-collegiate" style="font-size: 1.1rem; letter-spacing: 0.06em; color: var(--c-emerald);">
                 THE GRATICULE &bull; 2021/22 INAUGURAL ISSUE
               </span>
             </div>
-            <a href="/documents/first_edition.pdf" target="_blank" style="color: var(--c-paper); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.35rem; text-decoration: underline;">
+            <a href="${getUrl('/documents/first_edition.pdf')}" target="_blank" style="color: var(--c-paper); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.35rem; text-decoration: underline;">
               <span>Open in New Tab</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </a>
           </div>
 
           <iframe 
-            src="/documents/first_edition.pdf#toolbar=1&navpanes=1" 
+            src="${getUrl('/documents/first_edition.pdf')}#toolbar=1&navpanes=1" 
             title="The Graticule First Edition PDF Viewer" 
             style="width: 100%; height: 820px; border: none; display: block; background: #ffffff;"
             loading="lazy"
           >
             <div style="padding: 3rem; text-align: center; background: var(--c-paper);">
               <p>Your browser does not support inline PDF viewing.</p>
-              <a href="/documents/first_edition.pdf" class="btn btn-primary" style="margin-top: 1rem;">
+              <a href="${getUrl('/documents/first_edition.pdf')}" class="btn btn-primary" style="margin-top: 1rem;">
                 Download The Graticule PDF (74.5 MB)
               </a>
             </div>
