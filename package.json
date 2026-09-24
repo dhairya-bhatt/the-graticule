@@ -1,0 +1,29 @@
+{
+  "name": "the-graticule",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Academic Geographic & Earth Science Journal Web Platform",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "geography",
+    "earth-science",
+    "academic-journal",
+    "vite",
+    "typescript",
+    "interactive-globe"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  },
+  "dependencies": {
+    "lucide": "^0.473.0"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "missionParagraph1": "The Graticule is a geography journal founded by the Queen's University Belfast Geography Society. It discusses everything 'geography'; sometimes topics you may not have known were part of it! It aims to cover everything from climate, to social change, outer space to gender place, delivered to you in the form of essays, poems, stories, and interviews. Since the journal is digital, we welcome video or audio submissions also.",
+  "missionParagraph2": "After a long hiatus, we are back to create a space for students and academics to express their enthusiasm for geography, and to challenge the perception of what geography can offer as a discipline. By raising issues important to us and highlighting the vitality of a world in flux, we aim to increase appreciation for our environment. Inspiration is taken from a local and global scale, from contemporary to historical, and contributors are encouraged to be creative in their approach when writing.",
+  "acknowledgements": "We would like to thank all the contributors and the entirety of the editorial board for the re-establishment of 'The Graticule'. Further, we would like to thank the Geography Department at Queen's University Belfast, specifically Dr Diarmid Finnegan, Dr Tristan Sturm and Dr Oliver Dunnett, for their continuous support and advice.",
+  "faculty": [
+    {
+      "name": "Dr Diarmid Finnegan",
+      "role": "Geography Department, Queen's University Belfast"
+    },
+    {
+      "name": "Dr Tristan Sturm",
+      "role": "Geography Department, Queen's University Belfast"
+    },
+    {
+      "name": "Dr Oliver Dunnett",
+      "role": "Geography Department, Queen's University Belfast"
+    }
+  ],
+  "scans": [
+    {
+      "title": "Print Edition Scan I",
+      "caption": "Original print edition of The Graticule",
+      "url": "https://static.wixstatic.com/media/c7bda6_074e70b170d24c3cb6ade1863dda1758~mv2.jpg/v1/fill/w_600,h_868,al_c,q_85,enc_avif,quality_auto/c7bda6_074e70b170d24c3cb6ade1863dda1758~mv2.jpg"
+    },
+    {
+      "title": "Print Edition Scan II",
+      "caption": "Inaugural physical volume archive",
+      "url": "https://static.wixstatic.com/media/c7bda6_63b9364d7fd0421eac99b8c682e5b2b2~mv2.jpg/v1/fill/w_600,h_835,al_c,q_85,enc_avif,quality_auto/c7bda6_63b9364d7fd0421eac99b8c682e5b2b2~mv2.jpg"
+    },
+    {
+      "title": "Print Edition Scan III",
+      "caption": "Historic issue feature spreads",
+      "url": "https://static.wixstatic.com/media/c7bda6_2d1bf07a543248cb9f6a9794484c2ccd~mv2.jpeg/v1/fill/w_600,h_849,al_c,q_85,enc_avif,quality_auto/c7bda6_2d1bf07a543248cb9f6a9794484c2ccd~mv2.jpeg"
+    }
+  ]
+}

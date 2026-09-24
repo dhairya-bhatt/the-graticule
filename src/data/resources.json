@@ -1,0 +1,204 @@
+{
+  "notice": "This is a sensitive directory of support services. If you or someone you know needs support, confidential assistance is available below.",
+  "categories": [
+    {
+      "title": "QUB Specific Resources",
+      "description": "Support services provided specifically for Queen's University Belfast students and staff.",
+      "items": [
+        {
+          "name": "QUB Report and Support",
+          "description": "Online reporting tool and support network for students and staff experiencing bullying, harassment, sexual misconduct, or hate crime.",
+          "contact": "Online reporting or direct email to Student Wellbeing",
+          "phone": null,
+          "email": "studentwellbeing@qub.ac.uk",
+          "url": "https://reportandsupport.qub.ac.uk",
+          "badge": "QUB Official"
+        },
+        {
+          "name": "Inspire Counselling 24hr Helpline",
+          "description": "Free, confidential 24/7 student counselling support line for all Queen's University students.",
+          "contact": "24/7 Telephone & Email support",
+          "phone": "0808 800 0016",
+          "email": "qubstudents@inspirewellbeing.org",
+          "url": null,
+          "badge": "24/7 Freephone"
+        },
+        {
+          "name": "QUB Survivors",
+          "description": "Student-run survivor solidarity network at Queen's University Belfast providing community and resources.",
+          "contact": "Instagram direct message and resource links",
+          "phone": null,
+          "email": null,
+          "url": "https://www.instagram.com/qubsurvivors/",
+          "badge": "Student Network"
+        }
+      ]
+    },
+    {
+      "title": "Mental Health Resources",
+      "description": "Dedicated mental wellbeing guidance and professional advice.",
+      "items": [
+        {
+          "name": "Mind UK",
+          "description": "Advice, information, and support for anyone experiencing a mental health problem, with guides on trauma and recovery.",
+          "contact": "Information, helpline and community support",
+          "phone": null,
+          "email": null,
+          "url": "https://www.mind.org.uk",
+          "badge": "National Charity"
+        }
+      ]
+    },
+    {
+      "title": "LGBTQI+ Resources",
+      "description": "Specialized community care, advocacy, and safe spaces for LGBTQI+ individuals.",
+      "items": [
+        {
+          "name": "Transgender NI",
+          "description": "Human rights and community organization dedicated to advocating for trans individuals in Northern Ireland.",
+          "contact": "Advocacy, peer support and community information",
+          "phone": null,
+          "email": null,
+          "url": "https://transgenderni.org.uk",
+          "badge": "Advocacy & Support"
+        },
+        {
+          "name": "Here NI (Lesbian & Bi Women)",
+          "description": "Community organization dedicated to supporting lesbian and bisexual women and their families across Northern Ireland.",
+          "contact": "Support group, casework and social events",
+          "phone": null,
+          "email": null,
+          "url": "https://here875008472.wordpress.com",
+          "badge": "Community Group"
+        }
+      ]
+    },
+    {
+      "title": "Resources for Women",
+      "description": "Advocacy networks and gender parity community initiatives across Northern Ireland.",
+      "items": [
+        {
+          "name": "Northern Ireland Rural Women's Network (NIRWN)",
+          "description": "Supporting, connecting, and advocating for women living in rural communities across Northern Ireland.",
+          "contact": "Regional network coordination and community projects",
+          "phone": null,
+          "email": null,
+          "url": "https://www.nirwn.org",
+          "badge": "Rural Network"
+        },
+        {
+          "name": "50:50 NI",
+          "description": "Campaigning for equal representation of women in Northern Ireland politics and public life.",
+          "contact": "Training programmes and campaign advocacy",
+          "phone": null,
+          "email": null,
+          "url": "https://5050ni.com",
+          "badge": "Representation"
+        },
+        {
+          "name": "The Belfast Girl Gang",
+          "description": "Inclusive social and mutual-aid community group for women and non-binary individuals in Belfast.",
+          "contact": "Facebook community network",
+          "phone": null,
+          "email": null,
+          "url": "https://www.facebook.com/groups/957831484735806/",
+          "badge": "Community Group"
+        }
+      ]
+    },
+    {
+      "title": "Rape and Sexual Assault Help Resources",
+      "description": "Specialist medical, legal, emotional, and counseling services for survivors of sexual violence.",
+      "items": [
+        {
+          "name": "Confidential Emotional Support Line (UK)",
+          "description": "Confidential helpline offering emotional support for those who have experienced sexual assault, abuse, or violence.",
+          "contact": "Helpline: 01708 765200",
+          "phone": "01708 765200",
+          "email": null,
+          "url": "https://www.supportline.org.uk/problems/rape-and-sexual-assault/",
+          "badge": "UK Helpline"
+        },
+        {
+          "name": "The Rowan - Sexual Assault Referral Centre (NI)",
+          "description": "Regional referral centre providing confidential 24/7 medical care, support, and advocacy for anyone who has experienced sexual violence in Northern Ireland.",
+          "contact": "24/7 Freephone: 0800 389 4424 or Email",
+          "phone": "0800 389 4424",
+          "email": "therowan@northerntrust.hscni.net",
+          "url": "http://therowan.net",
+          "badge": "24/7 HSC NI Centre"
+        },
+        {
+          "name": "Nexus NI",
+          "description": "Specialist counseling and support services for survivors of sexual trauma and domestic violence across Northern Ireland.",
+          "contact": "Phone: 028 9032 6803",
+          "phone": "028 9032 6803",
+          "email": null,
+          "url": "https://nexusni.org",
+          "badge": "Specialist Support"
+        },
+        {
+          "name": "Mind UK - Sexual Abuse Support",
+          "description": "Guides to understanding trauma, rights, and therapeutic support services following abuse.",
+          "contact": "Guidance portal and service directory",
+          "phone": null,
+          "email": null,
+          "url": "https://www.mind.org.uk/information-support/guides-to-support-and-services/abuse/sexual-abuse/",
+          "badge": "Information Guides"
+        },
+        {
+          "name": "NI Direct - Domestic and Sexual Abuse Helpline",
+          "description": "Official Northern Ireland government portal providing 24-hour telephone, email, and live text support.",
+          "contact": "24/7 Multi-channel support",
+          "phone": "0808 802 1414",
+          "email": null,
+          "url": "https://www.nidirect.gov.uk/articles/domestic-and-sexual-abuse-helpline",
+          "badge": "Official Portal"
+        },
+        {
+          "name": "Raise Your Voice",
+          "description": "Grassroots organization tackling sexual harassment and sexual violence across Northern Ireland through advocacy and survivor workshops.",
+          "contact": "Community advocacy and events",
+          "phone": null,
+          "email": null,
+          "url": "https://www.raiseyourvoice.community",
+          "badge": "Grassroots Movement"
+        },
+        {
+          "name": "Rape Crisis NI",
+          "description": "Independent crisis support, counseling, and helpline services for survivors across Northern Ireland.",
+          "contact": "Freephone: 0800 0246 991",
+          "phone": "0800 0246 991",
+          "email": null,
+          "url": "https://rapecrisisni.org.uk",
+          "badge": "Crisis Support"
+        },
+        {
+          "name": "CRASAC",
+          "description": "Specialist counseling and support, including dedicated services for LGBTQI+ individuals affected by sexual violence.",
+          "contact": "Helpline and counseling service",
+          "phone": null,
+          "email": null,
+          "url": "https://www.crasac.org.uk/",
+          "badge": "LGBTQI+ Specialist"
+        }
+      ]
+    },
+    {
+      "title": "Domestic Violence Support",
+      "description": "Immediate safety planning, refuge accommodation, and community support.",
+      "items": [
+        {
+          "name": "Women's Aid Belfast and Lisburn (NI)",
+          "description": "Providing safety, confidential support, emergency refuge accommodation, and outreach for women and children affected by domestic violence.",
+          "contact": "Helpline: 028 9066 6049 or Email",
+          "phone": "028 9066 6049",
+          "email": "info@womensaidni.org",
+          "url": "https://www.belfastwomensaid.org.uk/",
+          "badge": "Emergency Refuge & Support"
+        }
+      ]
+    }
+  ],
+  "footerNotice": "This list is not complete; if you have any suggestions or corrections, please let us know at thegraticule@outlook.com."
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article | The Graticule</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/src/styles/main.css" />
+  <style>
+    /* Editorial Long-form typography overrides */
+    .article-reading-container {
+      max-width: 780px;
+      margin-inline: auto;
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      line-height: 1.8;
+      color: var(--c-ink);
+    }
+
+    .article-reading-container p {
+      margin-bottom: 1.85rem;
+    }
+
+    .article-reading-container h1,
+    .article-reading-container h2,
+    .article-reading-container h3,
+    .article-reading-container h4 {
+      font-family: var(--font-collegiate);
+      letter-spacing: 0.05em;
+      color: var(--c-ink);
+      margin-top: 2.75rem;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .article-reading-container h2 {
+      font-size: 2.2rem;
+      border-bottom: 1.5px solid var(--c-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .article-reading-container h3 {
+      font-size: 1.7rem;
+    }
+
+    .article-reading-container blockquote {
+      border-left: 3px solid var(--c-emerald);
+      padding-left: 1.5rem;
+      font-style: italic;
+      color: var(--c-ink-soft);
+      margin: 2rem 0;
+    }
+
+    .article-reading-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--radius-sm);
+      margin: 2.5rem 0;
+      border: 1px solid var(--c-border);
+    }
+
+    .article-reading-container figure {
+      margin: 2.5rem 0;
+    }
+
+    .article-reading-container figcaption {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      color: var(--c-ink-muted);
+      text-align: center;
+      margin-top: 0.6rem;
+    }
+
+    .article-reading-container ul, 
+    .article-reading-container ol {
+      margin: 1.5rem 0 2rem 2rem;
+    }
+
+    .article-reading-container li {
+      margin-bottom: 0.5rem;
+    }
+
+    .article-reading-container a {
+      color: var(--c-ocean);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .article-reading-container a:hover {
+      color: var(--c-ocean-light);
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/post.ts"></script>
+</body>
+</html>

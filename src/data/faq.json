@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "question": "How can I contribute?",
+    "answer": "If you'd like to contribute, submit a 'Word' or 'PDF' file via the 'SUBMIT' function on the 'CONTACT US' page. Note that the file size maximum is 15MB. If your file is bigger, you can e-mail us at thegraticule@outlook.com"
+  },
+  {
+    "id": 2,
+    "question": "Is the journal online only?",
+    "answer": "Until further notice, 'The Graticule' will be published online only in order to comply with the changing Covid-19 restrictions. This is to ensure safety and accessibility for both the editorial board and readers."
+  },
+  {
+    "id": 3,
+    "question": "Do I have to make submissions regularly?",
+    "answer": "Not at all! We are happy to receive both one-off and regular submissions from contributors."
+  },
+  {
+    "id": 4,
+    "question": "What if the FAQs don't answer my question?",
+    "answer": "You can e-mail us at geography-society@qub.ac.uk or contact us through Facebook or Instagram!"
+  },
+  {
+    "id": 5,
+    "question": "Do I have to be a geography student to submit?",
+    "answer": "Nope! We welcome students and staff or researchers across multiple disciplines - geography is a very big subject that has links with most disclipines."
+  }
+]
