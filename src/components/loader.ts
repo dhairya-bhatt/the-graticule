@@ -44,17 +44,32 @@ export function initLoadingScreen() {
 
   document.body.appendChild(loaderEl);
 
+  let dismissed = false;
   const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
     loaderEl.classList.add('blend-out');
     sessionStorage.setItem('graticule_loaded', 'true');
     setTimeout(() => {
       loaderEl.remove();
-    }, 700);
+    }, 320);
   };
 
   const skipBtn = document.getElementById('skipLoaderBtn');
-  if (skipBtn) skipBtn.addEventListener('click', dismiss);
+  if (skipBtn) skipBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dismiss();
+  });
 
-  // Auto-dismiss smoothly into the landing page
-  setTimeout(dismiss, 1600);
+  // Clicking anywhere dismisses instantly
+  loaderEl.addEventListener('click', dismiss);
+
+  // Dismiss swiftly once resources/fonts are ready
+  if (document.readyState === 'complete') {
+    setTimeout(dismiss, 400);
+  } else {
+    window.addEventListener('load', () => setTimeout(dismiss, 250), { once: true });
+    // Safety cap in case slow 3rd party assets stall window.onload
+    setTimeout(dismiss, 800);
+  }
 }

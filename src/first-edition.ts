@@ -31,7 +31,7 @@ if (app) {
           <div style="display: flex; justify-content: center;">
             <a href="${getUrl('/documents/first_edition.pdf')}" target="_blank" download="The_Graticule_First_Edition_2021_22.pdf" title="Click to download The Graticule First Edition PDF" style="display: block; position: relative; max-width: 320px; border-radius: var(--radius-sm); overflow: hidden; border: 2px solid var(--c-ink); box-shadow: var(--shadow-crisp); transition: transform var(--tr-base);">
               <img 
-                src="https://static.wixstatic.com/media/c7bda6_5b0794debc054281801a59ac0a843ce0~mv2.png/v1/fill/w_600,h_849,al_c,q_85,enc_avif,quality_auto/c7bda6_5b0794debc054281801a59ac0a843ce0~mv2.png" 
+                src="${getUrl('/images/first-edition-cover.png')}" 
                 alt="The Graticule First Edition Cover"
                 style="width: 100%; height: auto;" 
                 onerror="this.src='${getUrl('/images/logo-g.svg')}'"

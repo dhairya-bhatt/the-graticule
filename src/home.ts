@@ -181,10 +181,11 @@ if (app) {
             <div style="display: flex; justify-content: center;">
               <div style="position: relative; max-width: 360px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); border-radius: var(--radius-sm); border: 2px solid var(--c-emerald); overflow: hidden;">
                 <img 
-                  src="https://static.wixstatic.com/media/c7bda6_5b0794debc054281801a59ac0a843ce0~mv2.png/v1/fill/w_600,h_849,al_c,q_85,enc_avif,quality_auto/c7bda6_5b0794debc054281801a59ac0a843ce0~mv2.png" 
+                  src="${getUrl('/images/first-edition-cover.png')}" 
                   alt="First Edition Cover Preview" 
                   style="width: 100%; height: auto;"
-                  onerror="this.src='/images/logo-g.svg'"
+                  loading="lazy"
+                  onerror="this.src='${getUrl('/images/logo-g.svg')}'"
                 />
                 <div style="position: absolute; bottom: 0; inset-inline: 0; background: linear-gradient(to top, rgba(13,30,24,0.95), transparent); padding: 1.5rem 1rem 1rem; text-align: center;">
                   <span class="font-collegiate" style="color: var(--c-emerald); font-size: 1.1rem; letter-spacing: 0.08em;">INAUGURAL PRINT VOLUME &bull; 2021/22</span>

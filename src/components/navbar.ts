@@ -26,8 +26,35 @@ export function renderNavbar(activePage: string = '') {
           </a>
         </div>
 
-        <!-- Right: Sleek Cartographic Menu Trigger -->
+        <!-- Right: Sleek Cartographic Menu Trigger & Compass -->
         <div class="header-actions">
+          <div class="compass-widget" id="navbarCompassWidget" title="Cartographic Compass &bull; Calibrated to QUB (54.58&deg; N, 5.93&deg; W)" aria-label="Cartographic Compass">
+            <div class="compass-dial">
+              <svg class="compass-svg" viewBox="0 0 44 44" fill="none">
+                <circle cx="22" cy="22" r="19" stroke="var(--c-ink)" stroke-width="1.2" stroke-dasharray="1.5 2.5" opacity="0.35" />
+                <circle cx="22" cy="22" r="16.5" stroke="var(--c-ink)" stroke-width="1" opacity="0.6" />
+                <line x1="22" y1="2" x2="22" y2="7" stroke="var(--c-ink)" stroke-width="1.5" />
+                <line x1="22" y1="37" x2="22" y2="42" stroke="var(--c-ink)" stroke-width="1.5" />
+                <line x1="2" y1="22" x2="7" y2="22" stroke="var(--c-ink)" stroke-width="1.5" />
+                <line x1="37" y1="22" x2="42" y2="22" stroke="var(--c-ink)" stroke-width="1.5" />
+                <text x="22" y="11" font-size="6.5" font-weight="900" font-family="var(--font-collegiate)" fill="var(--c-ink)" text-anchor="middle">N</text>
+                <text x="22" y="36" font-size="5" font-weight="700" font-family="var(--font-collegiate)" fill="var(--c-ink-muted)" text-anchor="middle">S</text>
+                <text x="35" y="24" font-size="5" font-weight="700" font-family="var(--font-collegiate)" fill="var(--c-ink-muted)" text-anchor="middle">E</text>
+                <text x="9" y="24" font-size="5" font-weight="700" font-family="var(--font-collegiate)" fill="var(--c-ink-muted)" text-anchor="middle">W</text>
+              </svg>
+              <div class="compass-needle" id="navbarCompassNeedle">
+                <svg viewBox="0 0 14 32" fill="none" class="needle-svg">
+                  <!-- North (Action Green) -->
+                  <polygon points="7,1 11,16 7,13 3,16" fill="#14e281" stroke="#0d1e18" stroke-width="0.8" />
+                  <!-- South (Dark Ink) -->
+                  <polygon points="7,31 11,16 7,13 3,16" fill="#0d1e18" stroke="#0d1e18" stroke-width="0.8" />
+                  <!-- Center Pivot -->
+                  <circle cx="7" cy="16" r="2.2" fill="#ffffff" stroke="#0d1e18" stroke-width="1.2" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
           <button class="mobile-globe-btn header-globe-btn" id="mobileGlobeBtn" aria-label="Toggle Full Navigation Menu" aria-expanded="false" title="Open Navigation Menu">
             <div class="mobile-globe-inner">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -106,5 +133,28 @@ export function initNavbarInteractions() {
       toggleOverlay(false);
     }
   });
+
+  // Dynamic Scroll-Reactive Compass Needle
+  const needle = document.getElementById('navbarCompassNeedle');
+  if (needle) {
+    let ticking = false;
+    const updateCompass = () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      // Gentle 360-degree rotation across document traverse
+      const angle = (scrollY / maxScroll) * 360;
+      needle.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateCompass);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    updateCompass();
+  }
 }
 
