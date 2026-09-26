@@ -231,23 +231,38 @@ export function isAdminLoggedIn(): boolean {
   return sessionStorage.getItem(STORAGE_KEY_AUTH_TOKEN) === 'authenticated';
 }
 
+export function hasAdminCredentials(): boolean {
+  return !!localStorage.getItem('graticule_admin_creds');
+}
+
 export function adminLogin(username: string, pass: string): boolean {
   const savedCreds = localStorage.getItem('graticule_admin_creds');
-  let validUser = 'admin';
-  let validPass = 'graticule2021';
-  if (savedCreds) {
-    try {
-      const parsed = JSON.parse(savedCreds);
-      validUser = parsed.username || validUser;
-      validPass = parsed.password || validPass;
-    } catch (e) {}
+  if (!savedCreds) {
+    // Default admin access is removed: no access granted without configured credentials
+    return false;
   }
 
-  if (username.trim() === validUser && pass === validPass) {
-    sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
-    return true;
-  }
+  try {
+    const parsed = JSON.parse(savedCreds);
+    if (parsed.username && parsed.password) {
+      if (username.trim() === parsed.username && pass === parsed.password) {
+        sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
+        return true;
+      }
+    }
+  } catch (e) {}
+
   return false;
+}
+
+export function initializeAdminCredentials(newUsername: string, newPass: string): boolean {
+  if (!newUsername.trim() || !newPass.trim()) return false;
+  localStorage.setItem('graticule_admin_creds', JSON.stringify({
+    username: newUsername.trim(),
+    password: newPass
+  }));
+  sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
+  return true;
 }
 
 export function adminLogout(): void {

@@ -126,7 +126,7 @@ if (app) {
                   id="dropzone" 
                   style="border: 2px dashed var(--c-border); border-radius: var(--radius-sm); padding: 2rem 1.5rem; text-align: center; background: var(--c-paper-warm); cursor: pointer; transition: all var(--tr-fast);"
                 >
-                  <input type="file" id="fileInput" accept=".pdf,.doc,.docx" required style="display: none;" />
+                  <input type="file" id="fileInput" accept=".pdf,.doc,.docx" style="display: none;" />
                   <div style="width: 44px; height: 44px; margin: 0 auto 0.75rem; border-radius: 50%; background: rgba(40, 178, 111, 0.15); display: flex; align-items: center; justify-content: center; color: var(--c-emerald);">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                   </div>
@@ -215,14 +215,6 @@ if (app) {
                   <span style="font-weight: 600;">Instagram</span>
                   <span style="color: var(--c-emerald); font-family: var(--font-collegiate); font-size: 0.95rem;">@thegraticule &rarr;</span>
                 </a>
-                <a href="https://www.facebook.com/thegraticule" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 1px solid var(--c-border); border-radius: var(--radius-sm); transition: border-color var(--tr-fast);">
-                  <span style="font-weight: 600;">Facebook</span>
-                  <span style="color: var(--c-emerald); font-family: var(--font-collegiate); font-size: 0.95rem;">/thegraticule &rarr;</span>
-                </a>
-                <a href="https://www.linkedin.com/company/the-graticule/" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 1px solid var(--c-border); border-radius: var(--radius-sm); transition: border-color var(--tr-fast);">
-                  <span style="font-weight: 600;">LinkedIn</span>
-                  <span style="color: var(--c-emerald); font-family: var(--font-collegiate); font-size: 0.95rem;">The Graticule &rarr;</span>
-                </a>
               </div>
             </div>
           </div>
@@ -247,6 +239,8 @@ if (app) {
   const form = document.getElementById('submissionForm') as HTMLFormElement;
   const successBox = document.getElementById('formSuccessMessage');
   const submitAnotherBtn = document.getElementById('submitAnotherBtn');
+
+  let attachedFile: File | null = null;
 
   if (dropzone && fileInput) {
     dropzone.addEventListener('click', () => fileInput.click());
@@ -281,6 +275,7 @@ if (app) {
       removeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         fileInput.value = '';
+        attachedFile = null;
         if (promptEl) promptEl.style.display = 'block';
         if (infoEl) infoEl.style.display = 'none';
         if (errorEl) errorEl.style.display = 'none';
@@ -295,9 +290,10 @@ if (app) {
     const MAX_SIZE = 15 * 1024 * 1024; // 15MB
 
     if (file.size > MAX_SIZE) {
-      errorEl.innerText = `File is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Maximum allowed size is 15MB. Please email larger files to thegraticule@outlook.com.`;
+      errorEl.innerText = `File is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Maximum allowed size is 15MB. Please email larger files directly to thegraticule@outlook.com.`;
       errorEl.style.display = 'block';
       fileInput.value = '';
+      attachedFile = null;
       return;
     }
 
@@ -306,32 +302,151 @@ if (app) {
       errorEl.innerText = `Invalid file type (.${ext}). Please submit a Word document (.doc, .docx) or PDF.`;
       errorEl.style.display = 'block';
       fileInput.value = '';
+      attachedFile = null;
       return;
     }
 
+    attachedFile = file;
     nameEl.innerText = file.name;
     sizeEl.innerText = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
     promptEl.style.display = 'none';
     infoEl.style.display = 'block';
   }
 
-  // Form submission
+  // Form submission -> Compiles and dispatches formatted email to thegraticule@outlook.com
   if (form && successBox) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+
+      const authorName = (document.getElementById('authorName') as HTMLInputElement).value.trim();
+      const authorEmail = (document.getElementById('authorEmail') as HTMLInputElement).value.trim();
+      const affiliation = (document.getElementById('affiliation') as HTMLInputElement).value.trim();
+      const articleTitle = (document.getElementById('articleTitle') as HTMLInputElement).value.trim();
+      const category = (document.getElementById('categorySelect') as HTMLSelectElement).value;
+      const abstractText = (document.getElementById('abstract') as HTMLTextAreaElement).value.trim();
+      const fileName = attachedFile ? attachedFile.name : (fileInput.files?.[0]?.name || 'No file attached');
+      const fileSize = attachedFile ? `${(attachedFile.size / (1024 * 1024)).toFixed(2)} MB` : 'N/A';
+
+      const emailSubject = `[Manuscript Submission] ${articleTitle} - ${authorName}`;
+      const emailBody = [
+        'EDITORIAL SUBMISSION TO THE GRATICULE',
+        '========================================',
+        '',
+        'CONTRIBUTOR DETAILS:',
+        `• Author Name(s): ${authorName}`,
+        `• Author Email: ${authorEmail}`,
+        `• Affiliation / Degree: ${affiliation || 'Not specified'}`,
+        '',
+        'MANUSCRIPT DETAILS:',
+        `• Article / Essay Title: ${articleTitle}`,
+        `• Primary Category: ${category}`,
+        '',
+        'ABSTRACT / SYNOPSIS:',
+        abstractText || 'No abstract provided.',
+        '',
+        'ATTACHED MANUSCRIPT:',
+        `• File: ${fileName} (${fileSize})`,
+        `• Reminder: Please attach ${fileName} to this email before clicking send!`,
+        '',
+        '========================================',
+        'Dispatched via The Graticule Submission Portal',
+        "Queen's University Belfast • https://dhairya-bhatt.github.io/the-graticule/"
+      ].join('\n');
+
+      const mailtoUrl = `mailto:thegraticule@outlook.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+      const outlookWebUrl = `https://outlook.live.com/mail/0/deeplink/compose?to=thegraticule@outlook.com&subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=thegraticule@outlook.com&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+      successBox.innerHTML = `
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--c-emerald); color: var(--c-ink); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+
+        <span class="stamp-chip" style="margin-bottom: 0.75rem; font-size: 0.8rem; letter-spacing: 0.08em;">
+          READY FOR DISPATCH &bull; THEGRATICULE@OUTLOOK.COM
+        </span>
+
+        <h3 class="font-collegiate" style="font-size: 2rem; letter-spacing: 0.05em; color: var(--c-ink); margin-bottom: 0.75rem;">
+          EMAIL FORMATTED FOR SUBMISSION
+        </h3>
+
+        <p class="font-serif" style="font-size: 1.1rem; color: var(--c-ink-soft); line-height: 1.6; max-width: 620px; margin: 0 auto 1.5rem;">
+          Your manuscript has been compiled into an official academic submission addressed to <strong>thegraticule@outlook.com</strong>.
+        </p>
+
+        <!-- Direct Email Options -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 480px; margin: 0 auto 1.75rem;">
+          <a href="${mailtoUrl}" class="btn btn-primary" style="justify-content: center; font-size: 1.05rem; padding: 0.85rem; text-decoration: none;">
+            <span>Send via Default Mail App &rarr;</span>
+          </a>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <a href="${outlookWebUrl}" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content: center; font-size: 0.9rem; padding: 0.7rem; text-decoration: none;">
+              <span>Open Outlook Web</span>
+            </a>
+            <a href="${gmailUrl}" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content: center; font-size: 0.9rem; padding: 0.7rem; text-decoration: none;">
+              <span>Open in Gmail</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Formatted Preview -->
+        <div style="background: #ffffff; border: 1.5px solid var(--c-border); border-radius: var(--radius-sm); padding: 1.25rem; text-align: left; margin-bottom: 1.75rem; font-size: 0.9rem; color: var(--c-ink);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--c-border-faint); padding-bottom: 0.5rem;">
+            <span class="font-collegiate" style="color: var(--c-emerald); font-size: 0.85rem; letter-spacing: 0.08em;">PRE-COMPILED DISPATCH PREVIEW</span>
+            <button type="button" id="copyEmailTextBtn" style="background: none; border: 1px solid var(--c-border); border-radius: var(--radius-sm); padding: 0.25rem 0.6rem; font-size: 0.78rem; font-family: var(--font-collegiate); letter-spacing: 0.05em; cursor: pointer; color: var(--c-ink); transition: all var(--tr-fast);">
+              COPY TEXT
+            </button>
+          </div>
+          <pre style="white-space: pre-wrap; font-family: monospace; font-size: 0.82rem; line-height: 1.5; color: var(--c-ink-soft); max-height: 160px; overflow-y: auto; background: var(--c-paper); padding: 0.75rem; border-radius: 4px; border: 1px solid var(--c-border-faint);">${emailBody}</pre>
+          <div style="margin-top: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: #92400e; background: #fef3c7; padding: 0.6rem 0.85rem; border-radius: 4px; border: 1px solid #fde68a;">
+            <span style="font-size: 1rem;">&#9888;</span>
+            <span><strong>Reminder:</strong> Please ensure your manuscript file (<strong>${fileName}</strong>) is attached to the email before sending!</span>
+          </div>
+        </div>
+
+        <button id="submitAnotherBtn" class="btn btn-outline" style="font-size: 0.95rem; margin: 0 auto;">
+          Submit Another Contribution
+        </button>
+      `;
+
       form.style.display = 'none';
       successBox.style.display = 'block';
-      window.scrollTo({ top: form.offsetTop - 100, behavior: 'smooth' });
-    });
-  }
+      window.scrollTo({ top: form.offsetTop - 80, behavior: 'smooth' });
 
-  if (submitAnotherBtn && form && successBox) {
-    submitAnotherBtn.addEventListener('click', () => {
-      form.reset();
-      if (promptEl) promptEl.style.display = 'block';
-      if (infoEl) infoEl.style.display = 'none';
-      form.style.display = 'flex';
-      successBox.style.display = 'none';
+      // Automatically launch user's default email client
+      try {
+        window.location.href = mailtoUrl;
+      } catch (err) {}
+
+      // Copy text button listener
+      const copyBtn = document.getElementById('copyEmailTextBtn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(emailBody).then(() => {
+            copyBtn.textContent = 'COPIED TO CLIPBOARD!';
+            copyBtn.style.borderColor = 'var(--c-emerald)';
+            copyBtn.style.color = 'var(--c-emerald)';
+            setTimeout(() => {
+              copyBtn.textContent = 'COPY TEXT';
+              copyBtn.style.borderColor = 'var(--c-border)';
+              copyBtn.style.color = 'var(--c-ink)';
+            }, 2500);
+          });
+        });
+      }
+
+      // Re-bind submit another button
+      const newSubmitAnother = document.getElementById('submitAnotherBtn');
+      if (newSubmitAnother) {
+        newSubmitAnother.addEventListener('click', () => {
+          form.reset();
+          attachedFile = null;
+          if (promptEl) promptEl.style.display = 'block';
+          if (infoEl) infoEl.style.display = 'none';
+          form.style.display = 'flex';
+          successBox.style.display = 'none';
+        });
+      }
     });
   }
 }

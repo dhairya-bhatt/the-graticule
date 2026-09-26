@@ -9,6 +9,8 @@ import {
   exportDatabase,
   resetToBaseline,
   isAdminLoggedIn,
+  hasAdminCredentials,
+  initializeAdminCredentials,
   adminLogin,
   adminLogout,
   updateAdminCredentials,
@@ -46,11 +48,114 @@ function render() {
   if (!app) return;
 
   if (!isAdminLoggedIn()) {
-    renderLoginGate();
+    if (!hasAdminCredentials()) {
+      renderSetupGate();
+    } else {
+      renderLoginGate();
+    }
     return;
   }
 
   renderDashboard();
+}
+
+function renderSetupGate() {
+  if (!app) return;
+  app.innerHTML = `
+    <div class="admin-login-wrapper">
+      <div class="admin-login-card">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <div class="brand-monogram" style="width: 56px; height: 56px; font-size: 2.8rem; margin: 0 auto 1rem;">𝔊</div>
+          <h1 class="font-collegiate" style="font-size: 2.2rem; letter-spacing: 0.05em; color: var(--c-ink); margin: 0 0 0.25rem;">THE GRATICULE</h1>
+          <span style="font-family: var(--font-sans); font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-emerald); font-weight: 700;">INITIALIZE EDITORIAL ACCESS</span>
+        </div>
+
+        <p style="font-size: 0.92rem; color: var(--c-ink-muted); text-align: center; margin-bottom: 1.5rem; line-height: 1.5;">
+          No default administrator access exists. Please establish your private administrator username and secure password to protect this portal.
+        </p>
+
+        <form id="adminSetupForm" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div id="setupErrorAlert" class="admin-alert admin-alert-error" style="display: none;"></div>
+
+          <div class="form-group">
+            <label class="font-collegiate" style="font-size: 0.9rem; letter-spacing: 0.06em; color: var(--c-ink); display: block; margin-bottom: 0.4rem;">
+              CHOOSE EDITORIAL USERNAME
+            </label>
+            <input 
+              type="text" 
+              id="setupUsernameInput" 
+              class="admin-input" 
+              placeholder="e.g. editor" 
+              required 
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="font-collegiate" style="font-size: 0.9rem; letter-spacing: 0.06em; color: var(--c-ink); display: block; margin-bottom: 0.4rem;">
+              CHOOSE SECURE PASSWORD
+            </label>
+            <input 
+              type="password" 
+              id="setupPasswordInput" 
+              class="admin-input" 
+              placeholder="Enter secure password" 
+              required 
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="font-collegiate" style="font-size: 0.9rem; letter-spacing: 0.06em; color: var(--c-ink); display: block; margin-bottom: 0.4rem;">
+              CONFIRM PASSWORD
+            </label>
+            <input 
+              type="password" 
+              id="setupConfirmInput" 
+              class="admin-input" 
+              placeholder="Confirm password" 
+              required 
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; font-size: 1.05rem; padding: 0.85rem; margin-top: 0.5rem;">
+            <span>Configure &amp; Access Dashboard &rarr;</span>
+          </button>
+        </form>
+
+        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px dashed var(--c-border); text-align: center; font-size: 0.85rem;">
+          <a href="${getUrl('/')}" style="color: var(--c-emerald); text-decoration: none; font-weight: 600;">&larr; Return to The Graticule Homepage</a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const setupForm = document.getElementById('adminSetupForm') as HTMLFormElement;
+  const setupError = document.getElementById('setupErrorAlert');
+  if (setupForm) {
+    setupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = (document.getElementById('setupUsernameInput') as HTMLInputElement).value.trim();
+      const pass = (document.getElementById('setupPasswordInput') as HTMLInputElement).value;
+      const conf = (document.getElementById('setupConfirmInput') as HTMLInputElement).value;
+
+      if (!user || !pass) {
+        if (setupError) {
+          setupError.textContent = 'Please provide both username and password.';
+          setupError.style.display = 'block';
+        }
+        return;
+      }
+      if (pass !== conf) {
+        if (setupError) {
+          setupError.textContent = 'Passwords do not match.';
+          setupError.style.display = 'block';
+        }
+        return;
+      }
+
+      initializeAdminCredentials(user, pass);
+      render();
+    });
+  }
 }
 
 function renderLoginGate() {
@@ -75,7 +180,7 @@ function renderLoginGate() {
               type="text" 
               id="adminUsernameInput" 
               class="admin-input" 
-              value="admin" 
+              value="" 
               placeholder="Enter admin username" 
               required 
             />
@@ -90,7 +195,7 @@ function renderLoginGate() {
                 type="password" 
                 id="adminPasswordInput" 
                 class="admin-input" 
-                value="graticule2021" 
+                value="" 
                 placeholder="Enter password" 
                 required 
               />
@@ -110,12 +215,7 @@ function renderLoginGate() {
         </form>
 
         <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px dashed var(--c-border); text-align: center; font-size: 0.85rem; color: var(--c-ink-muted);">
-          <div style="display: inline-block; background: var(--c-paper-warm); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--c-border); font-family: var(--font-mono); font-size: 0.75rem; margin-bottom: 0.75rem;">
-            Default credentials: admin / graticule2021
-          </div>
-          <div>
-            <a href="${getUrl('/')}" style="color: var(--c-emerald); text-decoration: none; font-weight: 600;">&larr; Return to The Graticule Homepage</a>
-          </div>
+          <a href="${getUrl('/')}" style="color: var(--c-emerald); text-decoration: none; font-weight: 600;">&larr; Return to The Graticule Homepage</a>
         </div>
       </div>
     </div>
@@ -143,7 +243,7 @@ function renderLoginGate() {
         render();
       } else {
         if (errorBox) {
-          errorBox.textContent = 'Invalid credentials. Please verify your username and password.';
+          errorBox.textContent = 'Invalid credentials. Access denied.';
           errorBox.style.display = 'block';
         }
       }
