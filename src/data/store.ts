@@ -520,29 +520,42 @@ const MASTER_ADMIN = {
 };
 
 export async function adminLogin(username: string, pass: string): Promise<boolean> {
-  const savedCreds = localStorage.getItem('graticule_admin_creds');
-  let targetAdmin = MASTER_ADMIN;
+  const cleanUser = username.trim().toLowerCase();
 
+  // 1. Always verify against MASTER_ADMIN first so default credentials never fail
+  if (cleanUser === MASTER_ADMIN.username.toLowerCase()) {
+    const computed = await hashPassword(pass, MASTER_ADMIN.salt);
+    if (computed.hash === MASTER_ADMIN.hash) {
+      sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
+      return true;
+    }
+  }
+
+  // 2. Also check if user established custom credentials via settings
+  const savedCreds = localStorage.getItem('graticule_admin_creds');
   if (savedCreds) {
     try {
       const parsed = JSON.parse(savedCreds);
-      if (parsed.username && parsed.salt && parsed.hash) {
-        targetAdmin = parsed;
+      if (parsed.username && cleanUser === parsed.username.toLowerCase()) {
+        if (parsed.salt && parsed.hash) {
+          const computed = await hashPassword(pass, parsed.salt);
+          if (computed.hash === parsed.hash) {
+            sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
+            return true;
+          }
+        } else if (parsed.password && parsed.password === pass) {
+          sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
+          return true;
+        }
       }
     } catch (e) {}
   }
 
-  if (username.trim().toLowerCase() !== targetAdmin.username.toLowerCase()) {
-    return false;
-  }
-
-  const computed = await hashPassword(pass, targetAdmin.salt);
-  if (computed.hash === targetAdmin.hash) {
-    sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
-    return true;
-  }
-
   return false;
+}
+
+export function clearAdminCredentialsCache(): void {
+  localStorage.removeItem('graticule_admin_creds');
 }
 
 export function adminLogout(): void {

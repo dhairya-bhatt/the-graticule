@@ -14,6 +14,7 @@ import {
   adminLogin,
   adminLogout,
   updateAdminCredentials,
+  clearAdminCredentialsCache,
   Post,
   Author
 } from './data/store';
@@ -125,8 +126,11 @@ function renderLoginGate() {
           </button>
         </form>
 
-        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px dashed var(--c-border); text-align: center; font-size: 0.85rem; color: var(--c-ink-muted);">
+        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px dashed var(--c-border); text-align: center; font-size: 0.85rem; color: var(--c-ink-muted); display: flex; flex-direction: column; gap: 0.65rem;">
           <a href="${getUrl('/')}" style="color: var(--c-emerald); text-decoration: none; font-weight: 600;">&larr; Return to The Graticule Homepage</a>
+          <button type="button" id="resetLocalStateBtn" style="background: none; border: none; color: var(--c-ink-faint); font-size: 0.76rem; text-decoration: underline; cursor: pointer; padding: 0.25rem;">
+            Clear browser login cache (resets to default master credentials)
+          </button>
         </div>
       </div>
     </div>
@@ -136,6 +140,21 @@ function renderLoginGate() {
   const errorBox = document.getElementById('loginErrorAlert');
   const toggleBtn = document.getElementById('togglePassBtn');
   const passInput = document.getElementById('adminPasswordInput') as HTMLInputElement;
+  const resetCacheBtn = document.getElementById('resetLocalStateBtn');
+
+  if (resetCacheBtn) {
+    resetCacheBtn.addEventListener('click', () => {
+      clearAdminCredentialsCache();
+      if (errorBox) {
+        errorBox.textContent = '✓ Browser login cache cleared. You can now log in with the master credentials.';
+        errorBox.className = 'admin-alert';
+        errorBox.style.background = '#e8f7f0';
+        errorBox.style.color = '#166534';
+        errorBox.style.border = '1.5px solid #22c55e';
+        errorBox.style.display = 'block';
+      }
+    });
+  }
 
   if (toggleBtn && passInput) {
     toggleBtn.addEventListener('click', () => {
@@ -155,6 +174,10 @@ function renderLoginGate() {
       } else {
         if (errorBox) {
           errorBox.textContent = 'Invalid credentials. Access denied.';
+          errorBox.className = 'admin-alert admin-alert-error';
+          errorBox.style.background = '#fee2e2';
+          errorBox.style.color = '#b91c1c';
+          errorBox.style.border = '1.5px solid #b91c1c';
           errorBox.style.display = 'block';
         }
       }
