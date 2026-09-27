@@ -140,7 +140,7 @@ function renderSetupGate() {
   const setupForm = document.getElementById('adminSetupForm') as HTMLFormElement;
   const setupError = document.getElementById('setupErrorAlert');
   if (setupForm) {
-    setupForm.addEventListener('submit', (e) => {
+    setupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const user = (document.getElementById('setupUsernameInput') as HTMLInputElement).value.trim();
       const pass = (document.getElementById('setupPasswordInput') as HTMLInputElement).value;
@@ -161,7 +161,7 @@ function renderSetupGate() {
         return;
       }
 
-      initializeAdminCredentials(user, pass);
+      await initializeAdminCredentials(user, pass);
       render();
     });
   }
@@ -244,11 +244,11 @@ function renderLoginGate() {
   }
 
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const user = (document.getElementById('adminUsernameInput') as HTMLInputElement).value;
       const pass = passInput.value;
-      if (adminLogin(user, pass)) {
+      if (await adminLogin(user, pass)) {
         render();
       } else {
         if (errorBox) {
@@ -1043,13 +1043,13 @@ function attachDashboardEvents() {
   // Update Credentials
   const credsForm = document.getElementById('updateCredsForm');
   if (credsForm) {
-    credsForm.addEventListener('submit', (e) => {
+    credsForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const u = (document.getElementById('newUsernameInput') as HTMLInputElement).value;
       const p = (document.getElementById('newPasswordInput') as HTMLInputElement).value;
       if (u && p) {
-        updateAdminCredentials(u, p);
-        showToast('✓ Admin credentials updated successfully.');
+        await updateAdminCredentials(u, p);
+        showToast('✓ Admin credentials updated securely.');
         (credsForm as HTMLFormElement).reset();
       }
     });

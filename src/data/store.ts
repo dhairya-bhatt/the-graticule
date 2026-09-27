@@ -469,31 +469,92 @@ export function hasAdminCredentials(): boolean {
   return !!localStorage.getItem('graticule_admin_creds');
 }
 
-export function adminLogin(username: string, pass: string): boolean {
+function bytesToHex(bytes: Uint8Array): string {
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function hexToBytes(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+  }
+  return bytes;
+}
+
+// Secure PBKDF2-SHA256 password hashing via Web Crypto API (100,000 iterations, 128-bit salt)
+async function hashPassword(password: string, saltHex?: string): Promise<{ salt: string; hash: string }> {
+  const encoder = new TextEncoder();
+  const salt = saltHex ? hexToBytes(saltHex) : crypto.getRandomValues(new Uint8Array(16));
+  const saltStr = bytesToHex(salt);
+
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(password),
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  );
+
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: salt as any,
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    256
+  );
+
+  const hashStr = bytesToHex(new Uint8Array(derivedBits));
+  return { salt: saltStr, hash: hashStr };
+}
+
+export async function adminLogin(username: string, pass: string): Promise<boolean> {
   const savedCreds = localStorage.getItem('graticule_admin_creds');
   if (!savedCreds) {
-    // Default admin access is removed: no access granted without configured credentials
     return false;
   }
 
   try {
     const parsed = JSON.parse(savedCreds);
-    if (parsed.username && parsed.password) {
-      if (username.trim() === parsed.username && pass === parsed.password) {
+    if (!parsed.username || username.trim().toLowerCase() !== parsed.username.toLowerCase()) {
+      return false;
+    }
+
+    // Cryptographic hash check (PBKDF2)
+    if (parsed.salt && parsed.hash) {
+      const computed = await hashPassword(pass, parsed.salt);
+      if (computed.hash === parsed.hash) {
         sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
         return true;
       }
+      return false;
+    }
+
+    // Seamless migration from legacy plaintext
+    if (parsed.password && parsed.password === pass) {
+      const { salt, hash } = await hashPassword(pass);
+      localStorage.setItem('graticule_admin_creds', JSON.stringify({
+        username: parsed.username,
+        salt,
+        hash
+      }));
+      sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
+      return true;
     }
   } catch (e) {}
 
   return false;
 }
 
-export function initializeAdminCredentials(newUsername: string, newPass: string): boolean {
+export async function initializeAdminCredentials(newUsername: string, newPass: string): Promise<boolean> {
   if (!newUsername.trim() || !newPass.trim()) return false;
+  const { salt, hash } = await hashPassword(newPass);
   localStorage.setItem('graticule_admin_creds', JSON.stringify({
     username: newUsername.trim(),
-    password: newPass
+    salt,
+    hash
   }));
   sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
   return true;
@@ -503,9 +564,11 @@ export function adminLogout(): void {
   sessionStorage.removeItem(STORAGE_KEY_AUTH_TOKEN);
 }
 
-export function updateAdminCredentials(newUsername: string, newPass: string): void {
+export async function updateAdminCredentials(newUsername: string, newPass: string): Promise<void> {
+  const { salt, hash } = await hashPassword(newPass);
   localStorage.setItem('graticule_admin_creds', JSON.stringify({
     username: newUsername.trim(),
-    password: newPass
+    salt,
+    hash
   }));
 }
