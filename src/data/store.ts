@@ -510,54 +510,39 @@ async function hashPassword(password: string, saltHex?: string): Promise<{ salt:
   return { salt: saltStr, hash: hashStr };
 }
 
+// Master single administrator profile for editorial operations.
+// The plaintext password is NEVER stored anywhere in code or repository.
+// Only the irreversible PBKDF2-SHA256 (100,000 iterations) hash & unique cryptographic salt are stored.
+const MASTER_ADMIN = {
+  username: 'editor',
+  salt: 'f26679ac63c6e47c9257ffa45a48cd8f',
+  hash: 'c146daaf672902bd174315f1a4f574ffc852adb7c3a4b01a3cd742f6f590f800'
+};
+
 export async function adminLogin(username: string, pass: string): Promise<boolean> {
   const savedCreds = localStorage.getItem('graticule_admin_creds');
-  if (!savedCreds) {
+  let targetAdmin = MASTER_ADMIN;
+
+  if (savedCreds) {
+    try {
+      const parsed = JSON.parse(savedCreds);
+      if (parsed.username && parsed.salt && parsed.hash) {
+        targetAdmin = parsed;
+      }
+    } catch (e) {}
+  }
+
+  if (username.trim().toLowerCase() !== targetAdmin.username.toLowerCase()) {
     return false;
   }
 
-  try {
-    const parsed = JSON.parse(savedCreds);
-    if (!parsed.username || username.trim().toLowerCase() !== parsed.username.toLowerCase()) {
-      return false;
-    }
-
-    // Cryptographic hash check (PBKDF2)
-    if (parsed.salt && parsed.hash) {
-      const computed = await hashPassword(pass, parsed.salt);
-      if (computed.hash === parsed.hash) {
-        sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
-        return true;
-      }
-      return false;
-    }
-
-    // Seamless migration from legacy plaintext
-    if (parsed.password && parsed.password === pass) {
-      const { salt, hash } = await hashPassword(pass);
-      localStorage.setItem('graticule_admin_creds', JSON.stringify({
-        username: parsed.username,
-        salt,
-        hash
-      }));
-      sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
-      return true;
-    }
-  } catch (e) {}
+  const computed = await hashPassword(pass, targetAdmin.salt);
+  if (computed.hash === targetAdmin.hash) {
+    sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
+    return true;
+  }
 
   return false;
-}
-
-export async function initializeAdminCredentials(newUsername: string, newPass: string): Promise<boolean> {
-  if (!newUsername.trim() || !newPass.trim()) return false;
-  const { salt, hash } = await hashPassword(newPass);
-  localStorage.setItem('graticule_admin_creds', JSON.stringify({
-    username: newUsername.trim(),
-    salt,
-    hash
-  }));
-  sessionStorage.setItem(STORAGE_KEY_AUTH_TOKEN, 'authenticated');
-  return true;
 }
 
 export function adminLogout(): void {
