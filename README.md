@@ -112,6 +112,18 @@ The application will be served at `http://localhost:5173/`.
 
 ---
 
+## Supabase Cloud Database Integration
+
+The Graticule supports seamless integration with [Supabase](https://supabase.com/) for cloud persistence, cross-device content management, and manuscript intake tracking:
+
+1. **Database Schema**: Execute [`supabase_schema.sql`](supabase_schema.sql) in your Supabase project's SQL Editor. This initializes the `authors`, `posts`, and `submissions` tables with Row Level Security (RLS) and pre-seeds the 47 baseline articles and contributor profiles.
+2. **Connecting Credentials**:
+   - **Environment Variables**: Copy `.env.example` to `.env` and provide `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+   - **In-Browser Admin Panel**: Alternatively, go to `/admin/` &rarr; **Backup & Settings** &rarr; **Supabase Cloud Database** to input and verify your Project URL and Anon Key directly in the browser.
+3. **Manuscript Intake**: Submissions made via the dispatch portal at `/contact/` dispatch a formatted editorial email to `thegraticule@outlook.com` and automatically log the manuscript details into the Supabase `submissions` table when connected.
+
+---
+
 ## Deployment
 
 The repository includes an automated GitHub Actions deployment pipeline in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) configured for GitHub Pages:

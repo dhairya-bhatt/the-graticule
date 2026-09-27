@@ -1,6 +1,7 @@
 import baselinePosts from './posts.json';
 import baselineAuthors from './authors.json';
 import { getUrl } from '../utils/url';
+import { getSupabaseClient, isSupabaseConnected } from '../lib/supabase';
 
 export interface Author {
   name: string;
@@ -14,6 +15,7 @@ export interface Post {
   id: number;
   slug: string;
   title: string;
+  subtitle?: string;
   author: string;
   authorTitle?: string;
   authorAffiliation?: string;
@@ -159,6 +161,27 @@ export function savePost(postMeta: Partial<Post> & { title: string }, fullBodyHt
     }));
   }
 
+  // Sync to Supabase cloud if connected
+  if (isSupabaseConnected()) {
+    const client = getSupabaseClient();
+    if (client) {
+      client.from('posts').upsert({
+        slug: finalPost.slug,
+        title: finalPost.title,
+        subtitle: finalPost.subtitle || '',
+        date: finalPost.date,
+        excerpt: finalPost.excerpt,
+        content: fullBodyHtml || `<p>${finalPost.excerpt}</p>`,
+        cover_image: finalPost.coverImage,
+        author: finalPost.author,
+        categories: finalPost.categories,
+        read_time: finalPost.readTime
+      }, { onConflict: 'slug' }).then(({ error }) => {
+        if (error) console.warn('Supabase savePost error:', error.message);
+      });
+    }
+  }
+
   return finalPost;
 }
 
@@ -168,6 +191,16 @@ export function deletePost(slug: string): boolean {
   if (filtered.length !== posts.length) {
     localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(filtered));
     localStorage.removeItem(STORAGE_PREFIX_BODY + slug);
+
+    if (isSupabaseConnected()) {
+      const client = getSupabaseClient();
+      if (client) {
+        client.from('posts').delete().eq('slug', slug).then(({ error }) => {
+          if (error) console.warn('Supabase deletePost error:', error.message);
+        });
+      }
+    }
+
     return true;
   }
   return false;
@@ -195,6 +228,22 @@ export function saveAuthor(author: Author): Author {
     localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(posts));
   }
 
+  if (isSupabaseConnected()) {
+    const client = getSupabaseClient();
+    if (client) {
+      client.from('authors').upsert({
+        id: author.name.trim(),
+        name: author.name.trim(),
+        title: author.title || '',
+        affiliation: author.affiliation || '',
+        bio: author.bio || '',
+        avatar: author.avatar || ''
+      }, { onConflict: 'id' }).then(({ error }) => {
+        if (error) console.warn('Supabase saveAuthor error:', error.message);
+      });
+    }
+  }
+
   return author;
 }
 
@@ -203,9 +252,194 @@ export function deleteAuthor(name: string): boolean {
   if (authors[name]) {
     delete authors[name];
     localStorage.setItem(STORAGE_KEY_AUTHORS, JSON.stringify(authors));
+
+    if (isSupabaseConnected()) {
+      const client = getSupabaseClient();
+      if (client) {
+        client.from('authors').delete().eq('id', name).then(({ error }) => {
+          if (error) console.warn('Supabase deleteAuthor error:', error.message);
+        });
+      }
+    }
+
     return true;
   }
   return false;
+}
+
+// Cloud Sync with Supabase
+export async function syncFromSupabase(): Promise<{ success: boolean; message: string }> {
+  const client = getSupabaseClient();
+  if (!client) {
+    return { success: false, message: 'Supabase client not connected. Please enter URL and Anon Key.' };
+  }
+
+  try {
+    const { data: postsData, error: postsErr } = await client
+      .from('posts')
+      .select('*')
+      .order('date', { ascending: false });
+
+    if (postsErr) {
+      throw new Error(`Failed to fetch articles: ${postsErr.message}`);
+    }
+
+    let postCount = 0;
+    if (postsData && postsData.length > 0) {
+      const mappedPosts: Post[] = postsData.map(p => ({
+        id: p.id,
+        slug: p.slug,
+        title: p.title,
+        subtitle: p.subtitle,
+        author: p.author,
+        date: p.date,
+        readTime: p.read_time || '5 min read',
+        excerpt: p.excerpt || '',
+        coverImage: p.cover_image || '',
+        categories: Array.isArray(p.categories) ? p.categories : [],
+        url: getUrl(`/post/?slug=${p.slug}`),
+        contentLength: (p.content || '').length,
+        bodyHtml: p.content || '',
+        bodyText: (p.content || '').replace(/<[^>]+>/g, ' ')
+      }));
+      localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(mappedPosts));
+      postCount = mappedPosts.length;
+    }
+
+    const { data: authorsData, error: authorsErr } = await client
+      .from('authors')
+      .select('*');
+
+    if (authorsErr) {
+      throw new Error(`Failed to fetch authors: ${authorsErr.message}`);
+    }
+
+    let authorCount = 0;
+    if (authorsData && authorsData.length > 0) {
+      const authorsMap: Record<string, Author> = {};
+      authorsData.forEach(a => {
+        authorsMap[a.id || a.name] = {
+          name: a.name,
+          title: a.title,
+          affiliation: a.affiliation,
+          bio: a.bio,
+          avatar: a.avatar
+        };
+      });
+      localStorage.setItem(STORAGE_KEY_AUTHORS, JSON.stringify(authorsMap));
+      authorCount = Object.keys(authorsMap).length;
+    }
+
+    return {
+      success: true,
+      message: `Pulled ${postCount} articles and ${authorCount} authors from Supabase cloud!`
+    };
+  } catch (err: any) {
+    console.warn('Supabase sync skipped/failed:', err);
+    return {
+      success: false,
+      message: err?.message || 'Failed to pull cloud dispatches'
+    };
+  }
+}
+
+// Push all local posts and authors to Supabase
+export async function syncAllToSupabase(): Promise<{ success: boolean; message: string }> {
+  const client = getSupabaseClient();
+  if (!client) {
+    return { success: false, message: 'Supabase client not connected. Please enter URL and Anon Key.' };
+  }
+
+  try {
+    const posts = getPosts();
+    const authors = getAuthors();
+
+    // 1. Upsert authors
+    const authorPayload = Object.entries(authors).map(([id, a]) => ({
+      id,
+      name: a.name,
+      title: a.title,
+      affiliation: a.affiliation,
+      bio: a.bio,
+      avatar: a.avatar || ''
+    }));
+
+    if (authorPayload.length > 0) {
+      const { error: aErr } = await client.from('authors').upsert(authorPayload, { onConflict: 'id' });
+      if (aErr) throw new Error(`Failed to upsert authors: ${aErr.message}`);
+    }
+
+    // 2. Upsert posts
+    const postPayload = posts.map(p => {
+      let content = p.bodyHtml || '';
+      if (!content) {
+        const cached = localStorage.getItem(STORAGE_PREFIX_BODY + p.slug);
+        if (cached) {
+          try { content = JSON.parse(cached).bodyHtml; } catch (e) {}
+        }
+      }
+      return {
+        slug: p.slug,
+        title: p.title,
+        subtitle: p.subtitle || '',
+        date: p.date,
+        excerpt: p.excerpt || '',
+        content: content || `<p>${p.excerpt}</p>`,
+        cover_image: p.coverImage || '',
+        author: p.author,
+        categories: p.categories || [],
+        read_time: p.readTime || '5 min read'
+      };
+    });
+
+    if (postPayload.length > 0) {
+      const { error: pErr } = await client.from('posts').upsert(postPayload, { onConflict: 'slug' });
+      if (pErr) throw new Error(`Failed to upsert posts: ${pErr.message}`);
+    }
+
+    return { 
+      success: true, 
+      message: `Successfully synchronized ${postPayload.length} articles and ${authorPayload.length} authors to Supabase!` 
+    };
+  } catch (err: any) {
+    return { success: false, message: err?.message || 'Synchronization failed' };
+  }
+}
+
+export async function recordSubmissionToSupabase(submission: {
+  authorName: string;
+  authorEmail: string;
+  affiliation?: string;
+  articleTitle: string;
+  category: string;
+  abstract?: string;
+  fileName?: string;
+  fileSize?: string;
+}): Promise<boolean> {
+  const client = getSupabaseClient();
+  if (!client) return false;
+
+  try {
+    const { error } = await client.from('submissions').insert([{
+      author_name: submission.authorName,
+      author_email: submission.authorEmail,
+      affiliation: submission.affiliation || '',
+      article_title: submission.articleTitle,
+      category: submission.category,
+      abstract: submission.abstract || '',
+      file_name: submission.fileName || '',
+      file_size: submission.fileSize || '',
+      status: 'submitted_via_portal'
+    }]);
+    if (error) {
+      console.warn('Supabase submission logging notice:', error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn('Failed to record submission to Supabase:', err);
+    return false;
+  }
 }
 
 export function exportDatabase(): { posts: Post[]; authors: Record<string, Author> } {

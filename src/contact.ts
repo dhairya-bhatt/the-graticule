@@ -1,6 +1,7 @@
 import { renderNavbar, initNavbarInteractions } from './components/navbar';
 import { renderFooter } from './components/footer';
 import categoriesData from './data/categories.json';
+import { recordSubmissionToSupabase } from './data/store';
 
 const app = document.getElementById('app');
 
@@ -356,6 +357,18 @@ if (app) {
       const mailtoUrl = `mailto:thegraticule@outlook.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
       const outlookWebUrl = `https://outlook.live.com/mail/0/deeplink/compose?to=thegraticule@outlook.com&subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
       const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=thegraticule@outlook.com&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+      // Record to Supabase cloud if connected
+      recordSubmissionToSupabase({
+        authorName,
+        authorEmail,
+        affiliation,
+        articleTitle,
+        category,
+        abstract: abstractText,
+        fileName,
+        fileSize
+      });
 
       successBox.innerHTML = `
         <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--c-emerald); color: var(--c-ink); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">

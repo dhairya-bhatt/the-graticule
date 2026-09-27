@@ -296,6 +296,8 @@ button, input, textarea, select {
   box-shadow: var(--shadow-crisp-sm);
   transition: transform var(--tr-base), background-color var(--tr-fast);
   flex-shrink: 0;
+  padding-top: 0.13em;
+  box-sizing: border-box;
 }
 
 .brand-link:hover .brand-monogram {
@@ -317,6 +319,8 @@ button, input, textarea, select {
   font-size: 2.4rem;
   line-height: 1;
   flex-shrink: 0;
+  padding-top: 6px;
+  box-sizing: border-box;
 }
 
 .brand-titles {

@@ -8,6 +8,8 @@ import {
   deleteAuthor,
   exportDatabase,
   resetToBaseline,
+  syncAllToSupabase,
+  syncFromSupabase,
   isAdminLoggedIn,
   hasAdminCredentials,
   initializeAdminCredentials,
@@ -17,6 +19,13 @@ import {
   Post,
   Author
 } from './data/store';
+import {
+  getSupabaseConfig,
+  saveSupabaseConfig,
+  clearSupabaseConfig,
+  isSupabaseConnected,
+  testSupabaseConnection
+} from './lib/supabase';
 import { getUrl } from './utils/url';
 import categoriesData from './data/categories.json';
 
@@ -258,6 +267,8 @@ function renderDashboard() {
   const authorsObj = getAuthors();
   const authorsList = Object.values(authorsObj);
   const categoriesList = categoriesData.filter(c => c !== 'All Posts');
+  const supabaseConfig = getSupabaseConfig();
+  const isConnected = isSupabaseConnected();
 
   // Filter posts
   const filteredPosts = posts.filter(p => {
@@ -524,6 +535,109 @@ function renderDashboard() {
         ${activeTab === 'settings' ? `
           <div class="admin-tab-content">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 2rem;">
+              
+              <!-- Supabase Cloud Database Card (Full Width) -->
+              <div class="admin-settings-card" style="grid-column: 1 / -1;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.75rem;">
+                  <div>
+                    <div class="font-collegiate" style="font-size: 1.4rem; color: var(--c-ink); display: flex; align-items: center; gap: 0.6rem;">
+                      <span>☁️ SUPABASE CLOUD DATABASE</span>
+                    </div>
+                    <p style="font-size: 0.88rem; color: var(--c-ink-muted); margin-top: 0.25rem; max-width: 680px; line-height: 1.5;">
+                      Host your database on Supabase to enable cloud persistence, real-time sync across devices, and automated archiving of manuscripts submitted via the dispatch portal.
+                    </p>
+                  </div>
+                  <div>
+                    ${isConnected ? `
+                      <span style="display: inline-flex; align-items: center; gap: 0.45rem; background: #e8f7f0; color: #166534; border: 1.5px solid #22c55e; padding: 0.35rem 0.85rem; border-radius: 4px; font-family: var(--font-collegiate); font-size: 0.82rem; letter-spacing: 0.05em; font-weight: 700;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block;"></span>
+                        CONNECTED TO SUPABASE
+                      </span>
+                    ` : `
+                      <span style="display: inline-flex; align-items: center; gap: 0.45rem; background: #fef2f2; color: #991b1b; border: 1.5px solid #f87171; padding: 0.35rem 0.85rem; border-radius: 4px; font-family: var(--font-collegiate); font-size: 0.82rem; letter-spacing: 0.05em; font-weight: 700;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                        NOT CONFIGURED
+                      </span>
+                    `}
+                  </div>
+                </div>
+
+                <div style="background: var(--c-paper); border: 1.5px solid var(--c-border); border-radius: var(--radius-sm); padding: 1.25rem; margin-top: 0.5rem;">
+                  <form id="supabaseConfigForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                    <div class="form-group">
+                      <label style="font-size: 0.82rem; font-weight: 700; color: var(--c-ink); margin-bottom: 0.35rem; display: block; font-family: var(--font-collegiate); letter-spacing: 0.05em;">
+                        SUPABASE PROJECT URL *
+                      </label>
+                      <input 
+                        type="url" 
+                        id="supabaseUrlInput" 
+                        class="admin-input" 
+                        placeholder="https://xyzcompany.supabase.co" 
+                        value="${supabaseConfig ? supabaseConfig.url : ''}"
+                        required 
+                      />
+                      <span style="font-size: 0.75rem; color: var(--c-ink-muted); margin-top: 0.25rem; display: block;">
+                        Found in Supabase dashboard under <em>Project Settings &rarr; API &rarr; Project URL</em>
+                      </span>
+                    </div>
+
+                    <div class="form-group">
+                      <label style="font-size: 0.82rem; font-weight: 700; color: var(--c-ink); margin-bottom: 0.35rem; display: block; font-family: var(--font-collegiate); letter-spacing: 0.05em;">
+                        SUPABASE ANON (PUBLIC) KEY *
+                      </label>
+                      <input 
+                        type="password" 
+                        id="supabaseKeyInput" 
+                        class="admin-input" 
+                        placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." 
+                        value="${supabaseConfig ? supabaseConfig.anonKey : ''}"
+                        required 
+                      />
+                      <span style="font-size: 0.75rem; color: var(--c-ink-muted); margin-top: 0.25rem; display: block;">
+                        Found under <em>Project Settings &rarr; API &rarr; Project API keys (anon / public)</em>
+                      </span>
+                    </div>
+
+                    <div style="grid-column: 1 / -1; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-top: 0.25rem;">
+                      <button type="submit" class="btn btn-primary" style="font-size: 0.88rem; padding: 0.55rem 1.15rem;">
+                        <span>💾 Save Connection</span>
+                      </button>
+                      <button type="button" id="testSupabaseBtn" class="btn btn-outline" style="font-size: 0.88rem; padding: 0.55rem 1.15rem;">
+                        <span>⚡ Test Connection</span>
+                      </button>
+                      ${isConnected ? `
+                        <button type="button" id="disconnectSupabaseBtn" class="btn btn-outline" style="font-size: 0.88rem; padding: 0.55rem 1.15rem; border-color: #b91c1c; color: #b91c1c;">
+                          <span>Disconnect</span>
+                        </button>
+                      ` : ''}
+                    </div>
+                  </form>
+
+                  <div id="supabaseFeedback" style="margin-top: 1rem; display: none; padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-family: var(--font-sans);"></div>
+                </div>
+
+                <!-- Cloud Sync Actions -->
+                <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1.5px dashed var(--c-border); display: flex; flex-direction: column; gap: 0.75rem;">
+                  <div class="font-collegiate" style="font-size: 1.1rem; color: var(--c-ink);">
+                    🔄 CLOUD SYNCHRONIZATION
+                  </div>
+                  <p style="font-size: 0.85rem; color: var(--c-ink-muted); line-height: 1.5;">
+                    Seed or synchronize your cloud database with all 47 baseline articles and contributor profiles, or pull cloud revisions to your browser.
+                  </p>
+                  <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <button type="button" id="syncToSupabaseBtn" class="btn btn-dark" style="font-size: 0.88rem; padding: 0.55rem 1.15rem;" ${!isConnected ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+                      <span>⬆️ Push Local Archive to Supabase (Seed Cloud)</span>
+                    </button>
+                    <button type="button" id="syncFromSupabaseBtn" class="btn btn-outline" style="font-size: 0.88rem; padding: 0.55rem 1.15rem;" ${!isConnected ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+                      <span>⬇️ Pull Latest from Supabase</span>
+                    </button>
+                  </div>
+                  <div style="font-size: 0.78rem; color: var(--c-ink-muted); margin-top: 0.25rem; line-height: 1.4;">
+                    <strong>Setup Tip:</strong> Execute <code>supabase_schema.sql</code> (provided in the repository root) inside your Supabase project's SQL Editor to initialize the <code>authors</code>, <code>posts</code>, and <code>submissions</code> tables.
+                  </div>
+                </div>
+              </div>
+
               <!-- Data Export & Backup Card -->
               <div class="admin-settings-card">
                 <div class="font-collegiate" style="font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--c-ink);">
@@ -937,6 +1051,100 @@ function attachDashboardEvents() {
         updateAdminCredentials(u, p);
         showToast('✓ Admin credentials updated successfully.');
         (credsForm as HTMLFormElement).reset();
+      }
+    });
+  }
+
+  // Supabase Cloud Configuration
+  const supabaseForm = document.getElementById('supabaseConfigForm');
+  const feedbackEl = document.getElementById('supabaseFeedback');
+  const showFeedback = (msg: string, isError = false) => {
+    if (!feedbackEl) return;
+    feedbackEl.style.display = 'block';
+    feedbackEl.style.background = isError ? '#fee2e2' : '#e8f7f0';
+    feedbackEl.style.color = isError ? '#b91c1c' : '#166534';
+    feedbackEl.style.border = `1.5px solid ${isError ? '#f87171' : '#22c55e'}`;
+    feedbackEl.innerHTML = msg;
+  };
+
+  if (supabaseForm) {
+    supabaseForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = (document.getElementById('supabaseUrlInput') as HTMLInputElement).value;
+      const key = (document.getElementById('supabaseKeyInput') as HTMLInputElement).value;
+      saveSupabaseConfig(url, key);
+      showFeedback('Verifying connection with Supabase...', false);
+      const res = await testSupabaseConnection();
+      if (res.success) {
+        showToast('✓ Connected to Supabase cloud successfully!');
+        render();
+      } else {
+        showFeedback(`⚠️ Config saved, but connection test failed: ${res.message}`, true);
+      }
+    });
+  }
+
+  const testBtn = document.getElementById('testSupabaseBtn');
+  if (testBtn) {
+    testBtn.addEventListener('click', async () => {
+      const urlInput = document.getElementById('supabaseUrlInput') as HTMLInputElement;
+      const keyInput = document.getElementById('supabaseKeyInput') as HTMLInputElement;
+      if (urlInput?.value && keyInput?.value) {
+        saveSupabaseConfig(urlInput.value, keyInput.value);
+      }
+      showFeedback('Testing connection to Supabase cloud...', false);
+      const res = await testSupabaseConnection();
+      showFeedback(res.message, !res.success);
+    });
+  }
+
+  const disconnectBtn = document.getElementById('disconnectSupabaseBtn');
+  if (disconnectBtn) {
+    disconnectBtn.addEventListener('click', () => {
+      if (confirm('Disconnect from Supabase? Local cache and edits will remain preserved.')) {
+        clearSupabaseConfig();
+        showToast('✓ Disconnected from Supabase cloud.');
+        render();
+      }
+    });
+  }
+
+  const syncToBtn = document.getElementById('syncToSupabaseBtn');
+  if (syncToBtn) {
+    syncToBtn.addEventListener('click', async () => {
+      if (!isSupabaseConnected()) {
+        showFeedback('Please connect to Supabase first.', true);
+        return;
+      }
+      syncToBtn.setAttribute('disabled', 'true');
+      syncToBtn.innerHTML = '<span>⏳ Pushing archive to Supabase...</span>';
+      const res = await syncAllToSupabase();
+      syncToBtn.removeAttribute('disabled');
+      syncToBtn.innerHTML = '<span>⬆️ Push Local Archive to Supabase (Seed Cloud)</span>';
+      showFeedback(res.message, !res.success);
+      if (res.success) {
+        showToast('✓ Supabase database seeded successfully!');
+      }
+    });
+  }
+
+  const syncFromBtn = document.getElementById('syncFromSupabaseBtn');
+  if (syncFromBtn) {
+    syncFromBtn.addEventListener('click', async () => {
+      if (!isSupabaseConnected()) {
+        showFeedback('Please connect to Supabase first.', true);
+        return;
+      }
+      syncFromBtn.setAttribute('disabled', 'true');
+      syncFromBtn.innerHTML = '<span>⏳ Fetching cloud dispatches...</span>';
+      const res = await syncFromSupabase();
+      syncFromBtn.removeAttribute('disabled');
+      syncFromBtn.innerHTML = '<span>⬇️ Pull Latest from Supabase</span>';
+      if (res.success) {
+        showToast(`✓ Synchronized ${getPosts().length} dispatches from Supabase.`);
+        render();
+      } else {
+        showFeedback(res.message, true);
       }
     });
   }
