@@ -69,14 +69,19 @@ export function renderFooter() {
           </div>
         </div>
 
-        <!-- Footer Bottom: Full Disclaimer -->
+        <!-- Footer Bottom: Full Disclaimer & Attribution -->
         <div class="footer-bottom">
           <p class="footer-disclaimer-text">
             <strong>Disclaimer:</strong> Articles posted on 'The Graticule' represent the views and opinion of the author and may not reflect the views and opinion of the editorial board, other contributors or Queen's University Belfast.
           </p>
-          <p style="white-space: nowrap;">
-            &copy; ${new Date().getFullYear()} The Graticule &bull; All Rights Reserved
-          </p>
+          <div class="footer-attribution">
+            <p style="white-space: nowrap; margin: 0;">
+              &copy; ${new Date().getFullYear()} The Graticule &bull; All Rights Reserved
+            </p>
+            <p class="footer-credit">
+              Made by <a href="https://github.com/dhairya-bhatt" target="_blank" rel="noopener" class="footer-credit-link">Dhairya</a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
